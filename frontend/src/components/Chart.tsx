@@ -6,11 +6,6 @@ import formatCurrency from '@/utils/currency-formatter';
 import { LineChart } from '@mui/x-charts';
 import { Box } from '@mui/material';
 
-type DatasetType = {
-  value: number;
-  label: string;
-};
-
 type ChartProps = {
   data: DatasetType[];
 };
@@ -21,14 +16,20 @@ const secondaryColor = '#ffffff40';
 export default function Chart({ data }: ChartProps) {
   const currency = useAppSelector((state) => state.currency.value);
 
+  let sum = 0;
+  const progression = data.map((row) => {
+    sum += row.price;
+    return { ...row, price: sum };
+  });
+
   return (
     <Box sx={{ width: '100%', height: 400 }}>
       <LineChart
-        dataset={data}
+        dataset={progression}
         xAxis={[
           {
-            scaleType: 'point',
-            dataKey: 'label',
+            scaleType: 'time',
+            dataKey: 'date',
             disableLine: true,
             disableTicks: true,
             tickLabelStyle: { fill: `${mainColor}75` },
@@ -45,7 +46,7 @@ export default function Chart({ data }: ChartProps) {
         ]}
         series={[
           {
-            dataKey: 'value',
+            dataKey: 'price',
             showMark: false,
             area: true,
             color: mainColor,

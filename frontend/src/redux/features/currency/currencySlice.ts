@@ -1,7 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-type CurrencyType = 'BRL' | 'USD';
-
 type CurrencyState = {
   value: CurrencyType;
 };
@@ -18,6 +16,5 @@ const currencySlice = createSlice({
   },
 });
 
-export type { CurrencyType };
 export const { setCurrency } = currencySlice.actions;
 export default currencySlice.reducer;

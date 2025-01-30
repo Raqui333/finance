@@ -29,6 +29,26 @@ export const theme = createTheme({
     },
     divider: '#ffffff40',
   },
+  components: {
+    MuiPaper: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          borderRadius: theme.spacing(1),
+          padding: theme.spacing(2),
+        }),
+      },
+    },
+    MuiTableCell: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          borderBottomColor: theme.palette.divider,
+        }),
+        head: ({ theme }) => ({
+          color: theme.palette.primary.main,
+        }),
+      },
+    },
+  },
 });
 
 export default function MaterialThemeProvider({

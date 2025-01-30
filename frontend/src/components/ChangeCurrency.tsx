@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useAppDispatch } from '@/redux/hooks';
 import { setCurrency } from '@/redux/features/currency/currencySlice';
-import { CurrencyType } from '@/redux/features/currency/currencySlice';
 
 import { Box, IconButton } from '@mui/material';
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
