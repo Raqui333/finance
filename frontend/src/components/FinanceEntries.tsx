@@ -16,47 +16,43 @@ import Image from 'next/image';
 import formatCurrency from '@/utils/currency-formatter';
 import { useAppSelector } from '@/redux/hooks';
 
-type FinanceEntriesPros = {
-  data: FinanceEntriesType[];
-};
-
-export default function FinanceEntries({ data }: FinanceEntriesPros) {
+export default function FinanceEntries() {
   const currency = useAppSelector((state) => state.currency.value);
+  const data = useAppSelector((state) => state.user.entries);
 
   return (
-    <TableContainer
-      component={Paper}
-      sx={{
-        backgroundColor: 'background.paper',
-        maxHeight: 440,
-        scrollbarColor: 'red',
-      }}
-    >
+    <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
       <Typography color="primary.main">Recently Entries</Typography>
-      <Table>
-        <TableBody>
-          {data.map((row, index) => (
-            <TableRow key={index}>
-              <TableCell>{new Date(row.date).toDateString()}</TableCell>
-              <TableCell>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Image
-                    src={`https://logo.clearbit.com/${row.name
-                      .replaceAll(/\s/g, '')
-                      .toLocaleLowerCase()}.com`}
-                    width={16}
-                    height={16}
-                    alt="logo icon"
-                  ></Image>
-                  {row.name}
-                </Box>
-              </TableCell>
-              <TableCell>{row.desc}</TableCell>
-              <TableCell>{formatCurrency(row.price, currency)}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      {data.length > 0 ? (
+        <Table>
+          <TableBody>
+            {data.map((row, index) => (
+              <TableRow key={index}>
+                <TableCell>{new Date(row.date).toISOString()}</TableCell>
+                <TableCell>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Image
+                      src={`https://logo.clearbit.com/${row.name
+                        .replaceAll(/\s/g, '')
+                        .toLocaleLowerCase()}.com`}
+                      width={16}
+                      height={16}
+                      alt="logo icon"
+                    ></Image>
+                    {row.name}
+                  </Box>
+                </TableCell>
+                <TableCell>{row.desc}</TableCell>
+                <TableCell>{formatCurrency(row.price, currency)}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      ) : (
+        <Typography color="divide" align="center">
+          No Entries Found
+        </Typography>
+      )}
     </TableContainer>
   );
 }
