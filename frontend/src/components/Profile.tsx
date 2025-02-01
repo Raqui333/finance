@@ -11,7 +11,6 @@ import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 import { addEntry, setBalance } from '@/redux/features/user/userSlice';
 
 function createData(date: number, name: string, desc: string, price: number) {
-  console.log(date);
   return { date, name, desc, price };
 }
 
@@ -55,12 +54,14 @@ export default function Profile() {
     // generate random for now
     const randomCompany =
       companies[Math.floor(Math.random() * companies.length)];
+
     const new_data = createData(
       Date.now(),
       randomCompany,
       `Stock of ${randomCompany}`,
       50
     );
+
     dispatch(addEntry(new_data));
     dispatch(setBalance(new_data.price));
   };
