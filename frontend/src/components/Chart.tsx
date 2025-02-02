@@ -1,5 +1,7 @@
 'use client';
 
+import { useMemo } from 'react';
+
 import { useAppSelector } from '@/redux/hooks';
 import formatCurrency from '@/utils/currency-formatter';
 
@@ -13,11 +15,15 @@ export default function Chart() {
   const currency = useAppSelector((state) => state.currency.value);
   const entries = useAppSelector((state) => state.user.entries);
 
-  let sum = 0;
-  const data = entries.map((row) => {
-    sum += row.price;
-    return { ...row, price: sum };
-  });
+  const data = useMemo(() => {
+    let sum = 0;
+    return entries.map((row) => {
+      // Creates a clone of 'entries', but updates the 'price' field
+      // to be a cumulative sum of previous prices.
+      sum += row.price;
+      return { ...row, price: sum };
+    });
+  }, [entries]);
 
   return (
     <Box sx={{ width: '100%', height: 400 }}>
