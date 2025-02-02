@@ -1,6 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import React from 'react';
+
+import { useEffect, useState } from 'react';
 import { useAppDispatch } from '@/redux/hooks';
 import { setCurrency } from '@/redux/features/currency/currencySlice';
 
@@ -18,37 +20,50 @@ const flipAnimation = keyframes`
   }
 `;
 
+const CURRENCIES = {
+  BRL: '🇧🇷 BRL',
+  USD: '🇺🇸 USD',
+};
+
 export default function ChangeCurrency() {
   const [rotateState, setRotate] = useState(false);
   const dispatch = useAppDispatch();
 
+  useEffect(() => {
+    // Cleanup timeout on unmount or state change
+    if (rotateState) {
+      const timeout = setTimeout(() => setRotate(false), 500);
+      return () => clearTimeout(timeout);
+    }
+  }, [rotateState]);
+
   const handleFlagClick = (currency: CurrencyType) => {
     setRotate(true);
     dispatch(setCurrency(currency));
-    setTimeout(() => setRotate(false), 500);
   };
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-      <IconButton
-        color="primary"
-        onClick={() => handleFlagClick('BRL')}
-        sx={{ fontSize: '20px' }}
-      >
-        🇧🇷 BRL
-      </IconButton>
-      <CurrencyExchangeIcon
-        sx={{
-          animation: rotateState ? `${flipAnimation} 0.5s linear 1` : 'none',
-        }}
-      />
-      <IconButton
-        color="primary"
-        onClick={() => handleFlagClick('USD')}
-        sx={{ fontSize: '20px' }}
-      >
-        🇺🇸 USD
-      </IconButton>
+      {Object.entries(CURRENCIES).map(([currency, flag], index) => (
+        <React.Fragment key={currency}>
+          <IconButton
+            color="primary"
+            onClick={() => handleFlagClick(currency as CurrencyType)}
+            sx={{ fontSize: '20px' }}
+          >
+            {flag}
+          </IconButton>
+          {index === 0 ? (
+            <CurrencyExchangeIcon
+              sx={{
+                animation: rotateState
+                  ? `${flipAnimation} 0.5s linear 1`
+                  : 'none',
+              }}
+            />
+          ) : null}
+        </React.Fragment>
+      ))}
     </Box>
   );
 }
