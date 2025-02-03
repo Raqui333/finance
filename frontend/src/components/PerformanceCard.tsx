@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { useAppSelector } from '@/redux/hooks';
 import formatCurrency from '@/utils/currency-formatter';
 
@@ -8,21 +9,28 @@ import { SparkLineChart } from '@mui/x-charts';
 
 interface PerformanceCardProps {
   name: string;
-  color?: string;
 }
 
-export default function PerformanceCard({ name, color }: PerformanceCardProps) {
+function calculateDelta(start_value: number, last_value: number) {
+  if (!start_value || start_value === 0) return 0;
+
+  return ((last_value - start_value) * 100) / start_value;
+}
+
+export default function PerformanceCard({ name }: PerformanceCardProps) {
   const currency = useAppSelector((state) => state.currency.value);
   const entries = useAppSelector((state) => state.user.entries);
 
-  let sum = 0;
-  const data = entries.map((row) => {
-    sum += row.price;
-    return sum;
-  });
+  const data = useMemo(() => {
+    let sum = 0;
+    return entries.map((row) => {
+      sum += row.price;
+      return sum;
+    });
+  }, [entries]);
 
   const total = data.length > 0 ? data[data.length - 1] : 0;
-  const delta = ((total - data[0]) * 100) / data[0];
+  const delta = calculateDelta(data[0], total);
 
   return (
     <Box
@@ -39,19 +47,17 @@ export default function PerformanceCard({ name, color }: PerformanceCardProps) {
           sx={{
             fontSize: '13px',
             fontWeight: 'bold',
-            color: total > 0 ? 'success.main' : 'error.main',
+            color: total >= 0 ? 'success.main' : 'error.main',
           }}
         >
-          {isNaN(delta)
-            ? 'No entries found'
-            : '+' + formatCurrency(total, currency) + ` (${delta.toFixed(2)}%)`}
+          {'+' + formatCurrency(total, currency) + ` (${delta.toFixed(2)}%)`}
         </Typography>
       </Box>
       <SparkLineChart
         data={data}
         width={300}
         height={100}
-        colors={[color || total > 0 ? '#318ede' : '#d05574']}
+        colors={[total >= 0 ? '#318ede' : '#d05574']}
         curve="catmullRom"
         showHighlight={true}
         showTooltip={true}
