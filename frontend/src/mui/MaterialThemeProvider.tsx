@@ -1,11 +1,12 @@
 'use client';
 
-import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
+import { ThemeProvider, createTheme, CssBaseline, alpha } from '@mui/material';
 
 export const theme = createTheme({
   palette: {
     text: {
       primary: '#ffffff',
+      secondary: '#ffffff80',
     },
     primary: {
       main: '#318ede',
