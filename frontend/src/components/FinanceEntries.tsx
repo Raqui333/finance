@@ -16,6 +16,8 @@ import Image from 'next/image';
 import formatCurrency from '@/utils/currency-formatter';
 import { useAppSelector } from '@/redux/hooks';
 
+const LOGO_SIZE = 16;
+
 export default function FinanceEntries() {
   const currency = useAppSelector((state) => state.currency.value);
   const data = useAppSelector((state) => state.user.entries);
@@ -23,29 +25,35 @@ export default function FinanceEntries() {
   return (
     <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
       <Typography color="primary.main">Recently Entries</Typography>
-      {data.length > 0 ? (
+      {data.length ? (
         <Table>
           <TableBody>
-            {data.map((row, index) => (
-              <TableRow key={index}>
-                <TableCell>{new Date(row.date).toISOString()}</TableCell>
-                <TableCell>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Image
-                      src={`https://logo.clearbit.com/${row.name
-                        .replaceAll(/\s/g, '')
-                        .toLocaleLowerCase()}.com`}
-                      width={16}
-                      height={16}
-                      alt="logo icon"
-                    ></Image>
-                    {row.name}
-                  </Box>
-                </TableCell>
-                <TableCell>{row.desc}</TableCell>
-                <TableCell>{formatCurrency(row.price, currency)}</TableCell>
-              </TableRow>
-            ))}
+            {data.map((row, index) => {
+              const logo_name = row.name
+                .replace(/\s|[^\w\-]/g, '')
+                .toLocaleLowerCase();
+
+              const logo_url = `https://logo.clearbit.com/${logo_name}.com`;
+
+              return (
+                <TableRow key={row.date || index}>
+                  <TableCell>{row.date}</TableCell>
+                  <TableCell>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Image
+                        src={logo_url}
+                        width={LOGO_SIZE}
+                        height={LOGO_SIZE}
+                        alt="logo icon"
+                      ></Image>
+                      {row.name}
+                    </Box>
+                  </TableCell>
+                  <TableCell>{row.desc}</TableCell>
+                  <TableCell>{formatCurrency(row.price, currency)}</TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       ) : (
