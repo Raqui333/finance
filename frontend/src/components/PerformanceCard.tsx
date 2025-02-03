@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { useAppSelector } from '@/redux/hooks';
 import formatCurrency from '@/utils/currency-formatter';
 
-import { Box, Paper, Typography } from '@mui/material';
+import { alpha, Box, Paper, Typography } from '@mui/material';
 import { SparkLineChart } from '@mui/x-charts';
 
 interface PerformanceCardProps {
@@ -35,11 +35,12 @@ export default function PerformanceCard({ name }: PerformanceCardProps) {
   return (
     <Box
       component={Paper}
-      sx={{
+      sx={(theme) => ({
         '&:hover': {
-          filter: 'brightness(1.1)',
+          backgroundColor: alpha(theme.palette.primary.main, 0.1),
         },
-      }}
+        transition: 'background-color 0.3s ease',
+      })}
     >
       <Box>
         <Typography>{name}</Typography>
