@@ -27,61 +27,102 @@ export default function Chart() {
 
   return (
     <Box sx={{ width: '100%', height: 400 }}>
-      <LineChart
-        dataset={data}
-        xAxis={[
-          {
-            scaleType: 'time',
-            dataKey: 'date',
-            disableLine: true,
-            disableTicks: true,
-            tickLabelStyle: { fill: `${mainColor}75` },
-            hideTooltip: true,
-          },
-        ]}
-        yAxis={[
-          {
-            tickMinStep: 4,
-            disableLine: true,
-            disableTicks: true,
-            tickLabelStyle: { fill: secondaryColor },
-          },
-        ]}
-        series={[
-          {
-            dataKey: 'price',
-            showMark: false,
-            area: true,
-            color: mainColor,
-            valueFormatter: (v) => formatCurrency(v, currency),
-          },
-        ]}
-        grid={{ horizontal: true }}
-        width={undefined}
-        height={undefined}
-        sx={{
-          '.MuiAreaElement-root': {
-            fill: 'url(#chart-gradient)',
-          },
+      {data.length ? (
+        <LineChart
+          dataset={data}
+          xAxis={[
+            {
+              scaleType: 'time',
+              dataKey: 'date',
+              disableLine: true,
+              disableTicks: true,
+              tickLabelStyle: { fill: `${mainColor}75` },
+              hideTooltip: true,
+            },
+          ]}
+          yAxis={[
+            {
+              tickMinStep: 4,
+              disableLine: true,
+              disableTicks: true,
+              tickLabelStyle: { fill: secondaryColor },
+            },
+          ]}
+          series={[
+            {
+              dataKey: 'price',
+              showMark: false,
+              area: true,
+              color: mainColor,
+              valueFormatter: (v) => formatCurrency(v, currency),
+            },
+          ]}
+          grid={{ horizontal: true }}
+          width={undefined}
+          height={undefined}
+          sx={{
+            '.MuiAreaElement-root': {
+              fill: 'url(#chart-gradient)',
+            },
 
-          '.MuiChartsGrid-horizontalLine, .MuiChartsAxisHighlight-root': {
-            stroke: secondaryColor,
-          },
-
-          '.MuiChartsLegend-root': {
-            color: 'red',
-          },
-        }}
-      >
-        <defs>
-          <linearGradient id="chart-gradient" gradientTransform="rotate(90)">
-            <stop offset="50%" stopColor={`${mainColor}40`} />
-            <stop offset="75%" stopColor={`${mainColor}20`} />
-            <stop offset="90%" stopColor={`${mainColor}15`} />
-            <stop offset="95%" stopColor={`${mainColor}00`} />
-          </linearGradient>
-        </defs>
-      </LineChart>
+            '.MuiChartsGrid-horizontalLine, .MuiChartsAxisHighlight-root': {
+              stroke: 'secondaryColor',
+            },
+          }}
+        >
+          <defs>
+            <linearGradient id="chart-gradient" gradientTransform="rotate(90)">
+              <stop offset="50%" stopColor={`${mainColor}40`} />
+              <stop offset="75%" stopColor={`${mainColor}20`} />
+              <stop offset="90%" stopColor={`${mainColor}15`} />
+              <stop offset="95%" stopColor={`${mainColor}00`} />
+            </linearGradient>
+          </defs>
+        </LineChart>
+      ) : (
+        <ChartSkeleton />
+      )}
     </Box>
+  );
+}
+
+function ChartSkeleton() {
+  return (
+    <LineChart
+      skipAnimation
+      xAxis={[
+        {
+          data: [0, 50],
+          disableLine: true,
+          disableTicks: true,
+          tickLabelStyle: { fill: secondaryColor },
+          hideTooltip: true,
+        },
+      ]}
+      yAxis={[
+        {
+          tickMinStep: 4,
+          disableLine: true,
+          disableTicks: true,
+          tickLabelStyle: { fill: secondaryColor },
+        },
+      ]}
+      series={[
+        {
+          data: [0, 50],
+          showMark: false,
+          disableHighlight: true,
+        },
+      ]}
+      grid={{ horizontal: true }}
+      width={undefined}
+      height={undefined}
+      sx={{
+        pointerEvents: 'none',
+        '.MuiLineElement-root': {
+          display: 'none',
+        },
+      }}
+    />
   );
 }
