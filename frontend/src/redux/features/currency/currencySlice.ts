@@ -7,7 +7,7 @@ type CurrencyState = {
 const initialState: CurrencyState = { value: 'USD' };
 
 const currencySlice = createSlice({
-  name: 'theme',
+  name: 'currency',
   initialState,
   reducers: {
     setCurrency(state, action: PayloadAction<'BRL' | 'USD'>) {
