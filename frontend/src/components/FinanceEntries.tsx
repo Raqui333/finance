@@ -9,6 +9,7 @@ import {
   TableContainer,
   TableRow,
   Typography,
+  alpha,
 } from '@mui/material';
 
 import Image from 'next/image';
@@ -36,7 +37,15 @@ export default function FinanceEntries() {
               const logo_url = `https://logo.clearbit.com/${logo_name}.com`;
 
               return (
-                <TableRow key={row.date || index}>
+                <TableRow
+                  key={row.date || index}
+                  sx={(theme) => ({
+                    '&:hover': {
+                      backgroundColor: alpha(theme.palette.primary.main, 0.2),
+                    },
+                    transition: 'background-color 0.3s ease',
+                  })}
+                >
                   <TableCell>{row.date}</TableCell>
                   <TableCell>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
