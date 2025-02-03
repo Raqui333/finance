@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Paper, Typography, IconButton } from '@mui/material';
+import { Box, Paper, Typography, IconButton, alpha } from '@mui/material';
 
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -14,12 +14,7 @@ function createData(date: number, name: string, desc: string, price: number) {
   return { date, name, desc, price };
 }
 
-export default function Profile() {
-  const dispatch = useAppDispatch();
-
-  const currency = useAppSelector((state) => state.currency.value);
-  const user = useAppSelector((state) => state.user);
-
+const getRandomCompany = () => {
   const companies = [
     'Tesla',
     'Google',
@@ -50,10 +45,18 @@ export default function Profile() {
     'Huawei',
   ];
 
+  return companies[Math.floor(Math.random() * companies.length)];
+};
+
+export default function Profile() {
+  const dispatch = useAppDispatch();
+
+  const currency = useAppSelector((state) => state.currency.value);
+  const user = useAppSelector((state) => state.user);
+
   const addClickHandler = () => {
     // generate random for now
-    const randomCompany =
-      companies[Math.floor(Math.random() * companies.length)];
+    const randomCompany = getRandomCompany();
 
     const new_data = createData(
       Date.now(),
@@ -69,14 +72,14 @@ export default function Profile() {
   return (
     <Box
       component={Paper}
-      sx={{
+      sx={(theme) => ({
         '&:hover': {
-          filter: 'brightness(1.1)',
+          backgroundColor: alpha(theme.palette.primary.main, 0.1),
         },
         display: 'flex',
         flexDirection: 'column',
         gap: 1,
-      }}
+      })}
     >
       <Box
         sx={{
@@ -108,11 +111,8 @@ export default function Profile() {
           gap: 10,
         }}
       >
-        <IconButton>
-          <AddCircleIcon
-            sx={{ fontSize: 40, color: 'primary.main' }}
-            onClick={() => addClickHandler()}
-          />
+        <IconButton onClick={addClickHandler}>
+          <AddCircleIcon sx={{ fontSize: 40, color: 'primary.main' }} />
         </IconButton>
         <IconButton>
           <RemoveCircleIcon sx={{ fontSize: 40, color: 'primary.main' }} />
