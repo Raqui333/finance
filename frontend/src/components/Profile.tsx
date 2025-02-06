@@ -7,74 +7,26 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 
 import formatCurrency from '@/utils/currency-formatter';
-import { useAppSelector, useAppDispatch } from '@/redux/hooks';
-import { addEntry, setBalance } from '@/redux/features/user/userSlice';
+import { useAppSelector } from '@/redux/hooks';
 
-function createData(date: number, name: string, desc: string, price: number) {
-  return { date, name, desc, price };
-}
-
-const getRandomCompany = () => {
-  const companies = [
-    'Tesla',
-    'Google',
-    'Apple',
-    'Amazon',
-    'Space X',
-    'Samsung',
-    'Petrobras',
-    'Microsoft',
-    'Meta',
-    'Nvidia',
-    'IBM',
-    'Intel',
-    'Sony',
-    'Netflix',
-    'Oracle',
-    'Uber',
-    'Airbnb',
-    'Coca-Cola',
-    'Disney',
-    'Nike',
-    'Ford',
-    'BMW',
-    'Honda',
-    'Siemens',
-    'Adobe',
-    'Dell',
-    'Huawei',
-  ];
-
-  return companies[Math.floor(Math.random() * companies.length)];
-};
+import InsertNewEntry from './modals/InsertNewEntry';
+import { useState } from 'react';
 
 export default function Profile() {
-  const dispatch = useAppDispatch();
-
   const currency = useAppSelector((state) => state.currency.value);
   const user = useAppSelector((state) => state.user);
 
-  const addClickHandler = () => {
-    // generate random for now
-    const randomCompany = getRandomCompany();
+  const [isModalOpen, setModalOpen] = useState(false);
 
-    const new_data = createData(
-      Date.now(),
-      randomCompany,
-      `Stock of ${randomCompany}`,
-      50
-    );
-
-    dispatch(addEntry(new_data));
-    dispatch(setBalance(new_data.price));
-  };
+  const addClickHandler = () => setModalOpen(true);
+  const closeModalHandler = () => setModalOpen(false);
 
   return (
     <Box
       component={Paper}
       sx={(theme) => ({
         '&:hover': {
-          backgroundColor: alpha(theme.palette.primary.main, 0.1),
+          backgroundColor: alpha(theme.palette.primary.main, 0.01),
         },
         display: 'flex',
         flexDirection: 'column',
@@ -118,6 +70,9 @@ export default function Profile() {
           <RemoveCircleIcon sx={{ fontSize: 40, color: 'primary.main' }} />
         </IconButton>
       </Box>
+      {isModalOpen ? (
+        <InsertNewEntry isOpen={isModalOpen} onClose={closeModalHandler} />
+      ) : null}
     </Box>
   );
 }
