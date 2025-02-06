@@ -26,8 +26,16 @@ const userSlice = createSlice({
       if (!state.entries) state.entries = [];
       state.entries.push(action.payload);
     },
+    removeEntry(state, action: PayloadAction<number>) {
+      const index_to_remove = state.entries.findIndex(
+        (entry) => entry.date === action.payload
+      );
+
+      state.balance -= state.entries[index_to_remove].price;
+      state.entries.splice(index_to_remove, 1);
+    },
   },
 });
 
-export const { setName, setBalance, addEntry } = userSlice.actions;
+export const { setName, setBalance, addEntry, removeEntry } = userSlice.actions;
 export default userSlice.reducer;

@@ -2,6 +2,7 @@
 
 import {
   Box,
+  IconButton,
   Paper,
   Table,
   TableBody,
@@ -13,14 +14,17 @@ import {
 } from '@mui/material';
 
 import Image from 'next/image';
+import DeleteIcon from '@mui/icons-material/Delete';
 import formatCurrency from '@/utils/currency-formatter';
 
-import { useAppSelector } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { removeEntry } from '@/redux/features/user/userSlice';
 import { useState } from 'react';
 
 const LOGO_SIZE = 16;
 
 export default function FinanceEntries() {
+  const dispatch = useAppDispatch();
   const currency = useAppSelector((state) => state.currency.value);
   const data = useAppSelector((state) => state.user.entries);
 
@@ -56,11 +60,24 @@ export default function FinanceEntries() {
                   </TableCell>
                   <TableCell>{row.description}</TableCell>
                   <TableCell
+                    align="right"
                     sx={{
                       color: row.price < 0 ? 'error.main' : 'success.main',
                     }}
                   >
                     {formatCurrency(row.price, currency)}
+                  </TableCell>
+                  <TableCell align="right">
+                    <IconButton
+                      onClick={() => dispatch(removeEntry(row.date))}
+                      sx={{
+                        '&:hover': {
+                          color: 'error.main',
+                        },
+                      }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               );
