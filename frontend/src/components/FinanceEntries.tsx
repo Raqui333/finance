@@ -13,9 +13,10 @@ import {
 } from '@mui/material';
 
 import Image from 'next/image';
-
 import formatCurrency from '@/utils/currency-formatter';
+
 import { useAppSelector } from '@/redux/hooks';
+import { useState } from 'react';
 
 const LOGO_SIZE = 16;
 
@@ -34,7 +35,7 @@ export default function FinanceEntries() {
                 .replace(/\s|[^\w\-]/g, '')
                 .toLocaleLowerCase();
 
-              const logo_url = `https://logo.clearbit.com/${logo_name}.com`;
+              const url = `https://logo.clearbit.com/${logo_name}.com`;
 
               return (
                 <TableRow
@@ -49,17 +50,18 @@ export default function FinanceEntries() {
                   <TableCell>{row.date}</TableCell>
                   <TableCell>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <Image
-                        src={logo_url}
-                        width={LOGO_SIZE}
-                        height={LOGO_SIZE}
-                        alt="logo icon"
-                      ></Image>
+                      <ImageWithFallback src={url} />
                       {row.name}
                     </Box>
                   </TableCell>
                   <TableCell>{row.description}</TableCell>
-                  <TableCell>{formatCurrency(row.price, currency)}</TableCell>
+                  <TableCell
+                    sx={{
+                      color: row.price < 0 ? 'error.main' : 'success.main',
+                    }}
+                  >
+                    {formatCurrency(row.price, currency)}
+                  </TableCell>
                 </TableRow>
               );
             })}
@@ -71,5 +73,18 @@ export default function FinanceEntries() {
         </Typography>
       )}
     </TableContainer>
+  );
+}
+
+function ImageWithFallback({ src }: { src: string }) {
+  const [imgNotFound, setImgNotFound] = useState(false);
+  return (
+    <Image
+      src={imgNotFound ? '/globe.svg' : src}
+      width={LOGO_SIZE}
+      height={LOGO_SIZE}
+      alt="logo icon"
+      onError={() => setImgNotFound(true)}
+    />
   );
 }
