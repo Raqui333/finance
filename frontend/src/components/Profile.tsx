@@ -9,7 +9,7 @@ import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import formatCurrency from '@/utils/currency-formatter';
 import { useAppSelector } from '@/redux/hooks';
 
-import InsertNewEntry from './modals/InsertNewEntry';
+import NewEntryModal from './modals/NewEntryModal';
 import { useState } from 'react';
 
 export default function Profile() {
@@ -71,7 +71,7 @@ export default function Profile() {
         </IconButton>
       </Box>
       {isModalOpen ? (
-        <InsertNewEntry isOpen={isModalOpen} onClose={closeModalHandler} />
+        <NewEntryModal isOpen={isModalOpen} onClose={closeModalHandler} />
       ) : null}
     </Box>
   );

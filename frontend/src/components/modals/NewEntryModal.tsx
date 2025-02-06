@@ -25,7 +25,7 @@ function createData({ date, name, description, price }: UserEntry) {
   return { date, name, description, price };
 }
 
-export default function InsertNewEntry({
+export default function NewEntryModal({
   isOpen,
   onClose,
 }: InsertNewEntryProps) {
