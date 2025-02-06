@@ -5,7 +5,7 @@ declare global {
   type UserEntry = {
     date: number;
     name: string;
-    desc: string;
+    description: string;
     price: number;
   };
 }
