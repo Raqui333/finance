@@ -58,7 +58,7 @@ export default function FinanceEntries() {
                       {row.name}
                     </Box>
                   </TableCell>
-                  <TableCell>{row.desc}</TableCell>
+                  <TableCell>{row.description}</TableCell>
                   <TableCell>{formatCurrency(row.price, currency)}</TableCell>
                 </TableRow>
               );
