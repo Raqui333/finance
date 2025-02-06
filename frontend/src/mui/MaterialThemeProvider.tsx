@@ -4,6 +4,7 @@ import { ThemeProvider, createTheme, CssBaseline, alpha } from '@mui/material';
 
 export const theme = createTheme({
   palette: {
+    mode: 'dark',
     text: {
       primary: '#ffffff',
       secondary: '#ffffff80',
@@ -17,7 +18,7 @@ export const theme = createTheme({
     },
     background: {
       default: '#0b1326',
-      paper: '#151d34',
+      paper: '#081027',
     },
     error: {
       main: '#d05574',
