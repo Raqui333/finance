@@ -37,7 +37,7 @@ export default function PerformanceCard({ name }: PerformanceCardProps) {
       component={Paper}
       sx={(theme) => ({
         '&:hover': {
-          backgroundColor: alpha(theme.palette.primary.main, 0.1),
+          backgroundColor: alpha(theme.palette.primary.main, 0.01),
         },
         transition: 'background-color 0.3s ease',
       })}
@@ -51,7 +51,7 @@ export default function PerformanceCard({ name }: PerformanceCardProps) {
             color: total >= 0 ? 'success.main' : 'error.main',
           }}
         >
-          {'+' + formatCurrency(total, currency) + ` (${delta.toFixed(2)}%)`}
+          {formatCurrency(total, currency) + ` (${delta.toFixed(2)}%)`}
         </Typography>
       </Box>
       <SparkLineChart
