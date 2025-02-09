@@ -33,13 +33,11 @@ export default function NewEntryModal({
   const currency = useAppSelector((state) => state.currency.value);
 
   const [entryForm, setEntryForm] = useState<UserEntry>({
-    date: Date.now(),
+    date: new Date(Date.now()).toISOString().slice(0, 10),
     name: '',
     description: '',
     price: 0,
   });
-
-  const defaultDate = new Date(entryForm.date).toISOString().slice(0, 10);
 
   const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -49,7 +47,7 @@ export default function NewEntryModal({
     setEntryForm((prev) => ({
       ...prev,
       // convert number fields
-      [name]: name === 'date' || name === 'price' ? parseFloat(value) : value,
+      [name]: name === 'price' ? parseFloat(value) : value,
     }));
   };
 
@@ -91,7 +89,7 @@ export default function NewEntryModal({
             name="date"
             label="Date (MM/DD/YYYY)"
             type="date"
-            defaultValue={defaultDate}
+            defaultValue={entryForm.date}
             slotProps={{
               inputLabel: { shrink: true },
               input: { autoComplete: 'off' },
@@ -132,11 +130,11 @@ export default function NewEntryModal({
             }}
           />
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
-            <Button type="submit" variant="contained">
-              Done
-            </Button>
             <Button onClick={onClose} variant="outlined">
               Cancel
+            </Button>
+            <Button type="submit" variant="contained">
+              Done
             </Button>
           </Box>
         </Box>
