@@ -23,12 +23,18 @@ const userSlice = createSlice({
       state.balance += action.payload;
     },
     addEntry(state, action: PayloadAction<UserEntry>) {
-      if (!state.entries) state.entries = [];
-      state.entries.push(action.payload);
+      const last_entry = state.entries.at(-1) ?? null;
+      const last_id = last_entry?.id ?? -1;
+      // adds a new object with a sequential ID
+      state.entries.push({
+        ...action.payload,
+        id: last_id + 1,
+        createdAt: Date.now(),
+      });
     },
-    removeEntry(state, action: PayloadAction<number>) {
+    removeEntry(state, action: PayloadAction<number | undefined>) {
       const index_to_remove = state.entries.findIndex(
-        (entry) => entry.date === action.payload
+        (entry) => entry.id === action.payload
       );
 
       state.balance -= state.entries[index_to_remove].price;
