@@ -59,7 +59,7 @@ export default function FinanceEntries() {
                       {row.name}
                     </Box>
                   </TableCell>
-                  <TableCell>{row.description}</TableCell>
+                  <TableCell>{row.description || 'N/A'}</TableCell>
                   <TableCell
                     align="right"
                     sx={{
