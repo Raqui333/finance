@@ -43,7 +43,7 @@ export default function FinanceEntries() {
 
               return (
                 <TableRow
-                  key={row.date || index}
+                  key={index}
                   sx={(theme) => ({
                     '&:hover': {
                       backgroundColor: alpha(theme.palette.primary.main, 0.2),
@@ -69,7 +69,7 @@ export default function FinanceEntries() {
                   </TableCell>
                   <TableCell align="right">
                     <IconButton
-                      onClick={() => dispatch(removeEntry(row.date))}
+                      onClick={() => dispatch(removeEntry(row.id))}
                       sx={{
                         '&:hover': {
                           color: 'error.main',
