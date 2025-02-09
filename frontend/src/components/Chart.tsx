@@ -17,12 +17,17 @@ export default function Chart() {
 
   const data = useMemo(() => {
     let sum = 0;
-    return entries.map((row) => {
-      // Creates a clone of 'entries', but updates the 'price' field
-      // to be a cumulative sum of previous prices.
-      sum += row.price;
-      return { ...row, price: sum };
-    });
+
+    return entries
+      .toSorted(
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+      )
+      .map((row) => {
+        // Creates a clone of 'entries', but updates the 'price' field
+        // to be a cumulative sum of previous prices.
+        sum += row.price;
+        return { ...row, price: sum };
+      });
   }, [entries]);
 
   return (
@@ -32,12 +37,17 @@ export default function Chart() {
           dataset={data}
           xAxis={[
             {
-              scaleType: 'time',
-              dataKey: 'date',
+              scaleType: 'point',
+              dataKey: 'createdAt',
               disableLine: true,
               disableTicks: true,
-              tickLabelStyle: { fill: `${mainColor}75` },
-              hideTooltip: true,
+              tickLabelStyle: { display: 'none' },
+              valueFormatter: (v) => {
+                // find index where the item is equal to tooltip value
+                // tooltip value is based on createAt of the entry
+                const index = data.findIndex((i) => i.createdAt === v);
+                return `${data[index].name} (${data[index].date})`;
+              },
             },
           ]}
           yAxis={[
@@ -66,7 +76,7 @@ export default function Chart() {
             },
 
             '.MuiChartsGrid-horizontalLine, .MuiChartsAxisHighlight-root': {
-              stroke: 'secondaryColor',
+              stroke: secondaryColor,
             },
           }}
         >
@@ -95,8 +105,7 @@ function ChartSkeleton() {
           data: [0, 50],
           disableLine: true,
           disableTicks: true,
-          tickLabelStyle: { fill: secondaryColor },
-          hideTooltip: true,
+          tickLabelStyle: { display: 'none' },
         },
       ]}
       yAxis={[
