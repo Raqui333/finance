@@ -3,7 +3,9 @@ declare global {
   type CurrencyType = 'BRL' | 'USD';
 
   type UserEntry = {
-    date: number;
+    id?: number;
+    createdAt?: number;
+    date: string;
     name: string;
     description: string;
     price: number;
