@@ -36,6 +36,7 @@ export default function FinanceEntries() {
           <TableBody>
             {data.map((row, index) => {
               const logo_name = row.name
+                .normalize('NFD')
                 .replace(/\s|[^\w\-]/g, '')
                 .toLocaleLowerCase();
 
