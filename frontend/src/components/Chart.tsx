@@ -6,7 +6,7 @@ import { useAppSelector } from '@/redux/hooks';
 import formatCurrency from '@/utils/currency-formatter';
 
 import { LineChart } from '@mui/x-charts';
-import { Box } from '@mui/material';
+import { Box, useMediaQuery, useTheme } from '@mui/material';
 
 const mainColor = '#318ede';
 const secondaryColor = '#ffffff40';
@@ -14,6 +14,9 @@ const secondaryColor = '#ffffff40';
 export default function Chart() {
   const currency = useAppSelector((state) => state.currency.value);
   const entries = useAppSelector((state) => state.user.entries);
+
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const data = useMemo(() => {
     let sum = 0;
@@ -34,6 +37,7 @@ export default function Chart() {
     <Box sx={{ width: '100%', height: 400 }}>
       {data.length ? (
         <LineChart
+          margin={isSmallScreen ? { right: 0 } : undefined}
           dataset={data}
           xAxis={[
             {
@@ -90,15 +94,16 @@ export default function Chart() {
           </defs>
         </LineChart>
       ) : (
-        <ChartSkeleton />
+        <ChartSkeleton isSmallScreen={isSmallScreen} />
       )}
     </Box>
   );
 }
 
-function ChartSkeleton() {
+function ChartSkeleton({ isSmallScreen }: { isSmallScreen: boolean }) {
   return (
     <LineChart
+      margin={isSmallScreen ? { right: 0 } : undefined}
       skipAnimation
       xAxis={[
         {
