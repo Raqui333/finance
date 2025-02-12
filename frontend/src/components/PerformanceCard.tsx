@@ -36,13 +36,16 @@ export default function PerformanceCard({ name }: PerformanceCardProps) {
     <Box
       component={Paper}
       sx={(theme) => ({
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
         '&:hover': {
           backgroundColor: alpha(theme.palette.primary.main, 0.01),
         },
         transition: 'background-color 0.3s ease',
       })}
     >
-      <Box>
+      <Box sx={{ alignSelf: 'flex-start' }}>
         <Typography>{name}</Typography>
         <Typography
           sx={{

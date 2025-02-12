@@ -11,6 +11,8 @@ import {
   TableRow,
   Typography,
   alpha,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 
 import Image from 'next/image';
@@ -27,6 +29,9 @@ export default function FinanceEntries() {
   const dispatch = useAppDispatch();
   const currency = useAppSelector((state) => state.currency.value);
   const data = useAppSelector((state) => state.user.entries);
+
+  const theme = useTheme();
+  const isMediumOrLarger = useMediaQuery(theme.breakpoints.up('md'));
 
   return (
     <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
@@ -52,14 +57,16 @@ export default function FinanceEntries() {
                     transition: 'background-color 0.3s ease',
                   })}
                 >
-                  <TableCell>{row.date}</TableCell>
+                  {isMediumOrLarger && <TableCell>{row.date}</TableCell>}
                   <TableCell>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                       <ImageWithFallback src={url} />
                       {row.name}
                     </Box>
                   </TableCell>
-                  <TableCell>{row.description || 'N/A'}</TableCell>
+                  {isMediumOrLarger && (
+                    <TableCell>{row.description || 'N/A'}</TableCell>
+                  )}
                   <TableCell
                     align="right"
                     sx={{

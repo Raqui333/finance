@@ -65,16 +65,34 @@ export default function NewEntryModal({
     <Modal open={isOpen} onClose={onClose}>
       <Box
         component={Paper}
-        sx={{
+        sx={(theme) => ({
           display: 'flex',
           flexDirection: 'column',
           gap: 1,
           position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: '50%',
-        }}
+
+          width: {
+            md: '50%',
+            xs: '100%',
+          },
+          top: {
+            md: '50%',
+            xs: 'auto',
+          },
+          left: {
+            md: '50%',
+            xs: 'auto',
+          },
+          transform: {
+            md: 'translate(-50%, -50%)',
+            xs: 'none',
+          },
+
+          [theme.breakpoints.down('md')]: {
+            borderRadius: 0,
+            height: '100vh',
+          },
+        })}
       >
         <Typography variant="h6">New Entry</Typography>
         <Divider />

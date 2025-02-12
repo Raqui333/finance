@@ -21,12 +21,21 @@ export default function Home() {
         sx={{
           display: 'flex',
           width: '100%',
-          alignItems: 'flex-start',
+          alignItems: 'center',
           marginBottom: 2,
+          flexDirection: { md: 'row', xs: 'column' },
         }}
       >
         <Chart />
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+        <Box
+          sx={{
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            flexBasis: { md: 'none', xs: '10%' },
+            gap: 1,
+          }}
+        >
           <Profile />
           <PerformanceCard name="Performace" />
         </Box>

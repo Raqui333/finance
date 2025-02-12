@@ -30,6 +30,7 @@ export default function Profile() {
         },
         display: 'flex',
         flexDirection: 'column',
+        width: '100%',
         gap: 1,
       })}
     >
