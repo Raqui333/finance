@@ -1,0 +1,20 @@
+services:
+  database:
+    image: postgres:17.2-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - financedashboard_db_data:/var/lib/postgresql/data
+    networks:
+      - financedashboard_network
+
+volumes:
+  financedashboard_db_data:
+
+networks:
+  financedashboard_network:
+    driver: bridge
