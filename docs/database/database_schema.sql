@@ -13,9 +13,9 @@ CREATE TABLE IF NOT EXISTS public.users
 (
     id serial NOT NULL,
     name character varying(255) NOT NULL,
-    username character varying(255)[] NOT NULL,
-    email character varying(255)[] NOT NULL,
-    password character varying(255)[] NOT NULL,
+    username character varying(255) NOT NULL,
+    email character varying(255) NOT NULL,
+    password character varying(255) NOT NULL,
     balance numeric(10, 2) NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT unique_username UNIQUE (username),
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS public.assets
 (
     id serial NOT NULL,
     date timestamp with time zone NOT NULL,
-    name character varying(255)[] NOT NULL,
+    name character varying(255) NOT NULL,
     description character varying(255),
     price numeric(10, 2) NOT NULL,
     holder_id integer NOT NULL,
