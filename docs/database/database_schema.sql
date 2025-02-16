@@ -3,7 +3,7 @@
 BEGIN;
 
 
-ALTER TABLE IF EXISTS public.assets DROP CONSTRAINT IF EXISTS "fk_holder_Iid";
+ALTER TABLE IF EXISTS public.assets DROP CONSTRAINT IF EXISTS fk_holder_id;
 
 
 
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS public.users
     name character varying(255) NOT NULL,
     username character varying(255) NOT NULL,
     email character varying(255) NOT NULL,
-    password character varying(255) NOT NULL,
+    password character varying(161) NOT NULL,
     balance numeric(10, 2) NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT unique_username UNIQUE (username),
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS public.assets
 );
 
 ALTER TABLE IF EXISTS public.assets
-    ADD CONSTRAINT "fk_holder_Iid" FOREIGN KEY (holder_id)
+    ADD CONSTRAINT fk_holder_id FOREIGN KEY (holder_id)
     REFERENCES public.users (id) MATCH SIMPLE
     ON UPDATE CASCADE
     ON DELETE CASCADE
