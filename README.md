@@ -49,4 +49,4 @@
 - **Docker**: For containerization of the application.
 - **Docker Compose**: For managing multi-container applications.
 - **Git**: Version control system.
-- - **Jest**: For unit and integration testing.
+- **Jest**: For unit and integration testing.
