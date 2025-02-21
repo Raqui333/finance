@@ -1,54 +1,58 @@
+import { PasswordService } from '@/auth/password.service';
 import { DatabaseService } from '@/database/database.service';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { randomBytes, pbkdf2Sync } from 'crypto'; // for hashing the password
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly databaseService: DatabaseService) {}
-
-  private hashPassword(password: string) {
-    const salt = randomBytes(16).toString('hex');
-    const hash = pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
-    return `${hash}.${salt}`;
-  }
-
-  verifyPassword(password: string, hashedPassword: string) {
-    const [originalHash, salt] = hashedPassword.split('.');
-    const hash = pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
-    return hash === originalHash;
-  }
+  constructor(
+    private readonly databaseService: DatabaseService,
+    private readonly passwordService: PasswordService
+  ) {}
 
   async create(createUserDTO: Prisma.usersCreateInput) {
     try {
+      // normalize username
+      const username = createUserDTO.username.toLowerCase();
+
+      const userExists = await this.databaseService.users.findUnique({
+        where: { username },
+      });
+
+      if (userExists) throw new BadRequestException('Username already taken');
+
+      // hash password
+      const password = this.passwordService.hashPassword(
+        createUserDTO.password
+      );
+
       const { id } = await this.databaseService.users.create({
         data: {
           ...createUserDTO,
-
-          // normalize usernane
-          username: createUserDTO.username.toLocaleLowerCase(),
-
-          // hash password
-          password: this.hashPassword(createUserDTO.password),
-
+          username,
+          password,
           balance: 0,
         },
       });
 
       return { message: 'Succefully create a new user', user_id: id };
     } catch (err) {
-      throw err;
+      throw new BadRequestException('Failed to create user');
     }
   }
 
   async findAll() {
-    const users_array = await this.databaseService.users.findMany({
+    const users = await this.databaseService.users.findMany({
       omit: { password: true },
     });
 
-    if (!users_array.length) throw new NotFoundException('No users found');
+    if (!users.length) throw new NotFoundException('No users found');
 
-    return users_array;
+    return users;
   }
 
   async findOne(id: number) {
@@ -63,10 +67,23 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDTO: Prisma.usersUpdateInput) {
-    // todo
+    await this.findOne(id);
+
+    const updated_user = await this.databaseService.users.update({
+      where: { id },
+      data: updateUserDTO,
+    });
+
+    if (!updated_user) throw new NotFoundException('User not found');
+
+    return { message: 'Succefully update an user', user_id: updated_user.id };
   }
 
   async delete(id: number) {
-    // todo
+    await this.findOne(id);
+
+    await this.databaseService.users.delete({ where: { id } });
+
+    return { message: 'Successfully deleted user', user_id: id };
   }
 }
