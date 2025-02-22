@@ -27,7 +27,10 @@ export class AssetsService {
 
     if (!assets.length) throw new NotFoundException('No assets found');
 
-    return assets;
+    return assets.map((asset) => ({
+      ...asset,
+      price: asset.price.toNumber(),
+    }));
   }
 
   async findOne(id: number) {
@@ -37,7 +40,10 @@ export class AssetsService {
 
     if (!asset) throw new NotFoundException('Asset not found');
 
-    return asset;
+    return {
+      ...asset,
+      price: asset.price.toNumber(),
+    };
   }
 
   async update(id: number, updateAssetDTO: Prisma.assetsUpdateInput) {
