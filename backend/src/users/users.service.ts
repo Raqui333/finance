@@ -67,6 +67,11 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDTO: Prisma.usersUpdateInput) {
+    if ('id' in updateUserDTO) {
+      // this is to prevent updating the id
+      throw new BadRequestException('ID cannot be updated');
+    }
+
     await this.findOne(id);
 
     const updated_user = await this.databaseService.users.update({
