@@ -18,7 +18,6 @@ export class AssetsService {
 
       return { message: 'Succefully created an asset', asset_id: id };
     } catch (err) {
-      console.log(err);
       throw new BadRequestException('Failed to create asset');
     }
   }
