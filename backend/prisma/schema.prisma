@@ -23,6 +23,5 @@ model users {
   username String   @unique(map: "unique_username") @db.VarChar(255)
   email    String   @unique(map: "unique_email") @db.VarChar(255)
   password String   @db.VarChar(161)
-  balance  Decimal  @db.Decimal(10, 2)
   assets   assets[]
 }

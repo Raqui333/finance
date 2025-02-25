@@ -16,7 +16,6 @@ CREATE TABLE IF NOT EXISTS public.users
     username character varying(255) NOT NULL,
     email character varying(255) NOT NULL,
     password character varying(161) NOT NULL,
-    balance numeric(10, 2) NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT unique_username UNIQUE (username),
     CONSTRAINT unique_email UNIQUE (email)
