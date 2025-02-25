@@ -33,6 +33,19 @@ export class AssetsService {
     }));
   }
 
+  async findAllFromUser(user_id: number) {
+    const assets = await this.databaseService.assets.findMany({
+      where: { holder_id: user_id },
+    });
+
+    if (!assets.length) throw new NotFoundException('No assets found');
+
+    return assets.map((asset) => ({
+      ...asset,
+      price: asset.price.toNumber(),
+    }));
+  }
+
   async findOne(id: number) {
     const asset = await this.databaseService.assets.findUnique({
       where: { id },

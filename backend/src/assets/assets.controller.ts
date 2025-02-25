@@ -35,6 +35,16 @@ export class AssetsController {
     return this.assetsService.findAll();
   }
 
+  @Get('/from/:id')
+  @ApiOperation({ summary: 'Get all assets from a user' })
+  @ApiResponse({
+    status: 200,
+    description: 'Succefully returned all assets',
+  })
+  findAllFromUser(@Param('id') id: number) {
+    return this.assetsService.findAllFromUser(id);
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Get one asset by id' })
   @ApiResponse({

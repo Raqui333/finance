@@ -35,7 +35,6 @@ export class UsersService {
           ...createUserDTO,
           username,
           password,
-          balance: 0,
         },
       });
 
