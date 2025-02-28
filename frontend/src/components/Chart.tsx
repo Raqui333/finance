@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { use, useEffect, useMemo, useState } from 'react';
 
 import { useAppSelector } from '@/redux/hooks';
 import formatCurrency from '@/utils/currency-formatter';
@@ -8,49 +8,62 @@ import formatCurrency from '@/utils/currency-formatter';
 import { LineChart } from '@mui/x-charts';
 import { Box, useMediaQuery, useTheme } from '@mui/material';
 
+import { getEntriesFromUser } from '@/utils/actions';
+
 const mainColor = '#318ede';
 const secondaryColor = '#ffffff40';
 
-export default function Chart() {
+function sortByDateTime(a: UserEntry, b: UserEntry) {
+  return new Date(a.date).getTime() - new Date(b.date).getTime();
+}
+
+export default function Chart({ userId }: { userId: number }) {
   const currency = useAppSelector((state) => state.currency.value);
-  const entries = useAppSelector((state) => state.user.entries);
 
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const data = useMemo(() => {
-    let sum = 0;
+  const [data, setData] = useState([] as UserEntry[]);
 
-    return entries
-      .toSorted(
-        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-      )
-      .map((row) => {
-        // Creates a clone of 'entries', but updates the 'price' field
-        // to be a cumulative sum of previous prices.
-        sum += row.price;
-        return { ...row, price: sum };
-      });
-  }, [entries]);
+  useEffect(() => {
+    getEntriesFromUser(userId)
+      .then((res) => {
+        setData(res);
+      })
+      .catch((err) => console.error(err));
+  }, [userId]);
+
+  const sortedData = useMemo(() => {
+    let sum = 0;
+    return data.toSorted(sortByDateTime).map((row) => {
+      sum += row.price;
+      return { ...row, price: sum };
+    });
+  }, [data]);
 
   return (
     <Box sx={{ width: '100%', height: 400 }}>
-      {data.length ? (
+      {sortedData.length ? (
         <LineChart
           margin={isSmallScreen ? { right: 0 } : undefined}
-          dataset={data}
+          dataset={sortedData}
           xAxis={[
             {
               scaleType: 'point',
-              dataKey: 'createdAt',
+              dataKey: 'date',
               disableLine: true,
               disableTicks: true,
               tickLabelStyle: { display: 'none' },
               valueFormatter: (v) => {
                 // find index where the item is equal to tooltip value
-                // tooltip value is based on createAt of the entry
-                const index = data.findIndex((i) => i.createdAt === v);
-                return `${data[index].name} (${data[index].date})`;
+                // tooltip value is based on data of the entry
+                const index = sortedData.findIndex((i) => i.date === v);
+
+                const formattedDate = new Date(
+                  sortedData[index].date
+                ).toLocaleDateString('pt-BR');
+
+                return `${sortedData[index].name} (${formattedDate})`;
               },
             },
           ]}
@@ -68,7 +81,7 @@ export default function Chart() {
               showMark: false,
               area: true,
               color: mainColor,
-              valueFormatter: (v) => formatCurrency(v, currency),
+              valueFormatter: (v) => formatCurrency(v as number, currency),
             },
           ]}
           grid={{ horizontal: true }}
