@@ -1,8 +1,8 @@
 export default function formatCurrency(
-  value: number | null,
+  value: number = 0,
   currency: CurrencyType
 ) {
-  if (value === null) return 'none';
+  if (value === null) value = 0;
 
   const locale = currency === 'BRL' ? 'pt-BR' : 'en-US';
 
