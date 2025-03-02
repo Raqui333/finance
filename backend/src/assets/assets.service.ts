@@ -12,11 +12,14 @@ export class AssetsService {
 
   async create(createAssetDTO: Prisma.assetsCreateInput) {
     try {
-      const { id } = await this.databaseService.assets.create({
+      const new_asset = await this.databaseService.assets.create({
         data: createAssetDTO,
       });
 
-      return { message: 'Succefully created an asset', asset_id: id };
+      return {
+        message: 'Succefully created an asset',
+        asset: { ...new_asset, price: new_asset.price.toNumber() },
+      };
     } catch (err) {
       throw new BadRequestException('Failed to create asset');
     }
