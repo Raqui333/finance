@@ -2,15 +2,23 @@
 declare global {
   type CurrencyType = 'BRL' | 'USD';
 
+  type User = {
+    id: number;
+    name: string;
+    username: string;
+    email: string;
+  };
+
   type UserEntry = {
-    id?: number;
-    createdAt?: number;
+    id: number;
     date: string;
     name: string;
     description: string;
     price: number;
+    holder_id: number;
   };
+
+  type UserEntryForPost = Omit<UserEntry, 'id'>;
 }
 
-// Esse arquivo pode ser importado automaticamente, não precisa usar 'import' explicitamente.
 export {};
