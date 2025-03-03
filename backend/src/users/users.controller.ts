@@ -16,10 +16,10 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Create a user' })
+  @ApiOperation({ summary: 'Create an user' })
   @ApiResponse({
     status: 200,
-    description: 'Succefully created a user',
+    description: 'Succefully created an user',
   })
   createUser(@Body() createUserDTO: Prisma.usersCreateInput) {
     return this.usersService.create(createUserDTO);
@@ -39,17 +39,17 @@ export class UsersController {
   @ApiOperation({ summary: 'Get one user' })
   @ApiResponse({
     status: 200,
-    description: 'Succefully returned a user',
+    description: 'Succefully returned an user',
   })
   findOne(@Param('id') id: number) {
     return this.usersService.findOne(id);
   }
 
   @Patch(':id')
-  @ApiOperation({ summary: 'Update one user' })
+  @ApiOperation({ summary: 'Update an user' })
   @ApiResponse({
     status: 200,
-    description: 'Succefully updated a user',
+    description: 'Succefully updated an user',
   })
   update(
     @Param('id') id: number,
@@ -59,10 +59,10 @@ export class UsersController {
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete one user' })
+  @ApiOperation({ summary: 'Delete an user' })
   @ApiResponse({
     status: 200,
-    description: 'Succefully deleted a user',
+    description: 'Succefully deleted an user',
   })
   delete(@Param('id') id: number) {
     return this.usersService.delete(id);
