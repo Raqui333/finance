@@ -8,7 +8,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
 
 @Controller('users')
@@ -37,6 +37,7 @@ export class UsersController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get one user' })
+  @ApiParam({ name: 'id', type: String, description: 'user ID' })
   @ApiResponse({
     status: 200,
     description: 'Succefully returned an user',
@@ -47,6 +48,7 @@ export class UsersController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update an user' })
+  @ApiParam({ name: 'id', type: String, description: 'user ID' })
   @ApiResponse({
     status: 200,
     description: 'Succefully updated an user',
@@ -60,6 +62,7 @@ export class UsersController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete an user' })
+  @ApiParam({ name: 'id', type: String, description: 'user ID' })
   @ApiResponse({
     status: 200,
     description: 'Succefully deleted an user',
