@@ -7,8 +7,9 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 
 import formatCurrency from '@/utils/currency-formatter';
-import { getEntriesFromUser, getUserProfile } from '@/utils/actions';
-import { useAppSelector } from '@/redux/hooks';
+import { getUserProfile } from '@/utils/actions';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { setName } from '@/redux/features/user/userSlice';
 
 import { useEffect, useState } from 'react';
 
@@ -35,34 +36,32 @@ const mainBoxStyle = {
 };
 
 export default function Profile({ userId }: { userId: number }) {
+  const dispatch = useAppDispatch();
+
   const currency = useAppSelector((state) => state.currency.value);
+  const data = useAppSelector((state) => state.user);
+  const balance = data.entries.reduce(
+    (acc: number, curr: UserEntry) => acc + curr.price,
+    0
+  );
 
   const [isModalOpen, setModalOpen] = useState(false);
-
   const addClickHandler = () => setModalOpen(true);
   const closeModalHandler = () => setModalOpen(false);
 
-  const [data, setData] = useState<User>();
-  const [balance, setBalance] = useState<number>(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     getUserProfile(userId)
-      .then(async (res) => {
-        setData(res);
+      .then((res) => {
+        dispatch(setName(res.name));
       })
-      .catch((err) => console.error(err));
-
-    getEntriesFromUser(userId)
-      .then(async (res) => {
-        setBalance(
-          // set balance to the sum of user's assets prices
-          res.reduce((acc: number, curr: UserEntry) => acc + curr.price, 0)
-        );
-      })
-      .catch((err) => console.error(err));
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false));
   }, [userId]);
 
-  if (!data) return LoadingProfile();
+  if (loading) return LoadingProfile();
 
   return (
     <Box component={Paper} sx={{ ...mainBoxStyle }}>
@@ -85,7 +84,11 @@ export default function Profile({ userId }: { userId: number }) {
         </IconButton>
       </Box>
       {isModalOpen ? (
-        <NewEntryModal isOpen={isModalOpen} onClose={closeModalHandler} />
+        <NewEntryModal
+          userId={userId}
+          isOpen={isModalOpen}
+          onClose={closeModalHandler}
+        />
       ) : null}
     </Box>
   );

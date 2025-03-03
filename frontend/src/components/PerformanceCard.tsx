@@ -1,16 +1,14 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useAppSelector } from '@/redux/hooks';
 import formatCurrency from '@/utils/currency-formatter';
 
-import { Box, Paper, Typography } from '@mui/material';
+import { Box, Paper, Skeleton, Typography } from '@mui/material';
 import { SparkLineChart } from '@mui/x-charts';
-import { getEntriesFromUser } from '@/utils/actions';
 
 interface PerformanceCardProps {
   name: string;
-  userId: number;
 }
 
 function calculateDelta(start_value: number, last_value: number) {
@@ -38,24 +36,11 @@ const mainBoxStyle = {
   },
 };
 
-export default function PerformanceCard({
-  name,
-  userId,
-}: PerformanceCardProps) {
+export default function PerformanceCard({ name }: PerformanceCardProps) {
   const currency = useAppSelector((state) => state.currency.value);
-
-  const [entries, setEntries] = useState<UserEntry[]>([]);
-
-  useEffect(() => {
-    getEntriesFromUser(userId)
-      .then(async (res) => {
-        setEntries(res);
-      })
-      .catch((err) => console.error(err));
-  }, [userId]);
+  const entries = useAppSelector((state) => state.user.entries);
 
   const data = useMemo(() => getSequencialSumArray(entries), [entries]);
-
   const total = data.length > 0 ? data[data.length - 1] : 0;
   const delta = calculateDelta(data[0], total);
 

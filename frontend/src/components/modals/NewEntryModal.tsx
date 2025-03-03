@@ -11,28 +11,28 @@ import {
   Typography,
 } from '@mui/material';
 
-import { addEntry, setBalance } from '@/redux/features/user/userSlice';
-
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { addEntry } from '@/redux/features/user/userSlice';
+
 import { useState } from 'react';
+import { createUserEntry } from '@/utils/actions';
 
 interface InsertNewEntryProps {
+  userId: number;
   isOpen: boolean;
   onClose: () => void;
 }
 
-function createData({ date, name, description, price }: UserEntry) {
-  return { date, name, description, price };
-}
-
 export default function NewEntryModal({
+  userId,
   isOpen,
   onClose,
 }: InsertNewEntryProps) {
   const dispatch = useAppDispatch();
+
   const currency = useAppSelector((state) => state.currency.value);
 
-  const [entryForm, setEntryForm] = useState<UserEntry>({
+  const [entryForm, setEntryForm] = useState<Partial<UserEntry>>({
     date: new Date(Date.now()).toISOString().slice(0, 10),
     name: '',
     description: '',
@@ -41,8 +41,6 @@ export default function NewEntryModal({
 
   const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-
-    if (name === 'date' && value === '') return;
 
     setEntryForm((prev) => ({
       ...prev,
@@ -53,12 +51,16 @@ export default function NewEntryModal({
 
   const onSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const new_data = createData(entryForm);
 
-    dispatch(addEntry(new_data));
-    dispatch(setBalance(new_data.price));
-
-    onClose();
+    createUserEntry(userId, entryForm as UserEntry)
+      .then((res) => {
+        dispatch(addEntry(res.asset));
+        onClose();
+      })
+      .catch((err) => {
+        console.error(err);
+        onClose();
+      });
   };
 
   return (

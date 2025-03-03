@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  alpha,
   Box,
   IconButton,
   Paper,
@@ -10,7 +11,6 @@ import {
   TableContainer,
   TableRow,
   Typography,
-  alpha,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
@@ -20,18 +20,49 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import formatCurrency from '@/utils/currency-formatter';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { removeEntry } from '@/redux/features/user/userSlice';
-import { useState } from 'react';
+import { setEntry, removeEntry } from '@/redux/features/user/userSlice';
+
+import { useCallback, useEffect, useState } from 'react';
+import { getEntriesFromUser, removeUserEntry } from '@/utils/actions';
 
 const LOGO_SIZE = 16;
 
-export default function FinanceEntries() {
+function getIcon(logo_name: string) {
+  const normalized_logo_name = logo_name
+    .normalize('NFD')
+    .replace(/\s|[^\w\-]/g, '')
+    .toLocaleLowerCase();
+
+  return `https://logo.clearbit.com/${normalized_logo_name}.com`;
+}
+
+export default function FinanceEntries({ userId }: { userId: number }) {
   const dispatch = useAppDispatch();
+
   const currency = useAppSelector((state) => state.currency.value);
   const data = useAppSelector((state) => state.user.entries);
 
   const theme = useTheme();
   const isMediumOrLarger = useMediaQuery(theme.breakpoints.up('md'));
+
+  useEffect(() => {
+    getEntriesFromUser(userId)
+      .then((res) => {
+        dispatch(setEntry(res));
+      })
+      .catch((err) => console.error(err));
+  }, [userId]);
+
+  const handleRemoveEntry = useCallback(
+    (id: number) => {
+      removeUserEntry(id)
+        .then(() => {
+          dispatch(removeEntry(id));
+        })
+        .catch((err) => console.error(err));
+    },
+    [data]
+  );
 
   return (
     <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
@@ -39,57 +70,50 @@ export default function FinanceEntries() {
       {data.length ? (
         <Table>
           <TableBody>
-            {data.map((row, index) => {
-              const logo_name = row.name
-                .normalize('NFD')
-                .replace(/\s|[^\w\-]/g, '')
-                .toLocaleLowerCase();
-
-              const url = `https://logo.clearbit.com/${logo_name}.com`;
-
-              return (
-                <TableRow
-                  key={index}
-                  sx={(theme) => ({
-                    '&:hover': {
-                      backgroundColor: alpha(theme.palette.primary.main, 0.2),
-                    },
-                    transition: 'background-color 0.3s ease',
-                  })}
+            {data.map((row, index) => (
+              <TableRow
+                key={index}
+                sx={(theme) => ({
+                  '&:hover': {
+                    backgroundColor: alpha(theme.palette.primary.main, 0.2),
+                  },
+                  transition: 'background-color 0.3s ease',
+                })}
+              >
+                {isMediumOrLarger && (
+                  <TableCell>{row.date.slice(0, 10)}</TableCell>
+                )}
+                <TableCell>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <ImageWithFallback src={getIcon(row.name)} />
+                    {row.name}
+                  </Box>
+                </TableCell>
+                {isMediumOrLarger && (
+                  <TableCell>{row.description || 'N/A'}</TableCell>
+                )}
+                <TableCell
+                  align="right"
+                  sx={{
+                    color: row.price < 0 ? 'error.main' : 'success.main',
+                  }}
                 >
-                  {isMediumOrLarger && <TableCell>{row.date}</TableCell>}
-                  <TableCell>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <ImageWithFallback src={url} />
-                      {row.name}
-                    </Box>
-                  </TableCell>
-                  {isMediumOrLarger && (
-                    <TableCell>{row.description || 'N/A'}</TableCell>
-                  )}
-                  <TableCell
-                    align="right"
+                  {formatCurrency(row.price, currency)}
+                </TableCell>
+                <TableCell align="right">
+                  <IconButton
+                    onClick={() => handleRemoveEntry(row.id)}
                     sx={{
-                      color: row.price < 0 ? 'error.main' : 'success.main',
+                      '&:hover': {
+                        color: 'error.main',
+                      },
                     }}
                   >
-                    {formatCurrency(row.price, currency)}
-                  </TableCell>
-                  <TableCell align="right">
-                    <IconButton
-                      onClick={() => dispatch(removeEntry(row.id))}
-                      sx={{
-                        '&:hover': {
-                          color: 'error.main',
-                        },
-                      }}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
+                    <DeleteIcon />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       ) : (

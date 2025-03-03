@@ -1,14 +1,12 @@
 'use client';
 
-import { use, useEffect, useMemo, useState } from 'react';
+import { useMemo, useRef } from 'react';
 
 import { useAppSelector } from '@/redux/hooks';
 import formatCurrency from '@/utils/currency-formatter';
 
 import { LineChart } from '@mui/x-charts';
 import { Box, useMediaQuery, useTheme } from '@mui/material';
-
-import { getEntriesFromUser } from '@/utils/actions';
 
 const mainColor = '#318ede';
 const secondaryColor = '#ffffff40';
@@ -17,27 +15,20 @@ function sortByDateTime(a: UserEntry, b: UserEntry) {
   return new Date(a.date).getTime() - new Date(b.date).getTime();
 }
 
-export default function Chart({ userId }: { userId: number }) {
+export default function Chart() {
+  const divRef = useRef<HTMLDivElement>(null);
+
   const currency = useAppSelector((state) => state.currency.value);
+  const data = useAppSelector((state) => state.user.entries);
 
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const [data, setData] = useState([] as UserEntry[]);
-
-  useEffect(() => {
-    getEntriesFromUser(userId)
-      .then((res) => {
-        setData(res);
-      })
-      .catch((err) => console.error(err));
-  }, [userId]);
-
   const sortedData = useMemo(() => {
     let sum = 0;
-    return data.toSorted(sortByDateTime).map((row) => {
+    return data.toSorted(sortByDateTime).map((row, index) => {
       sum += row.price;
-      return { ...row, price: sum };
+      return { ...row, price: sum, date: new Date(row.date).getTime() + index };
     });
   }, [data]);
 
@@ -45,6 +36,7 @@ export default function Chart({ userId }: { userId: number }) {
     <Box sx={{ width: '100%', height: 400 }}>
       {sortedData.length ? (
         <LineChart
+          ref={divRef}
           margin={isSmallScreen ? { right: 0 } : undefined}
           dataset={sortedData}
           xAxis={[
@@ -69,7 +61,6 @@ export default function Chart({ userId }: { userId: number }) {
           ]}
           yAxis={[
             {
-              tickMinStep: 4,
               disableLine: true,
               disableTicks: true,
               tickLabelStyle: { fill: secondaryColor },
