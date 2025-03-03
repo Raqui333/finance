@@ -1,29 +1,11 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-} from '@nestjs/common';
-import { UsersService } from './users.service';
+import { Body, Controller, Delete, Get, Param, Patch } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { UsersService } from './users.service';
 import { Prisma } from '@prisma/client';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
-  @Post()
-  @ApiOperation({ summary: 'Create an user' })
-  @ApiResponse({
-    status: 200,
-    description: 'Succefully created an user',
-  })
-  createUser(@Body() createUserDTO: Prisma.usersCreateInput) {
-    return this.usersService.create(createUserDTO);
-  }
 
   @Get()
   @ApiOperation({ summary: 'Get all users' })
