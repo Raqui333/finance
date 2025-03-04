@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { DatabaseService } from '@/database/database.service';
 import { Prisma } from '@prisma/client';
@@ -25,18 +26,7 @@ export class AssetsService {
     }
   }
 
-  async findAll() {
-    const assets = await this.databaseService.assets.findMany();
-
-    if (!assets.length) throw new NotFoundException('No assets found');
-
-    return assets.map((asset) => ({
-      ...asset,
-      price: asset.price.toNumber(),
-    }));
-  }
-
-  async findAllFromUser(user_id: number) {
+  async read(user_id: number) {
     const assets = await this.databaseService.assets.findMany({
       where: { holder_id: user_id },
     });
@@ -62,13 +52,20 @@ export class AssetsService {
     };
   }
 
-  async update(id: number, updateAssetDTO: Prisma.assetsUpdateInput) {
+  async update(
+    id: number,
+    updateAssetDTO: Prisma.assetsUpdateInput,
+    holder_id: number
+  ) {
     if ('id' in updateAssetDTO) {
       // this is to prevent updating the id
       throw new BadRequestException('ID cannot be updated');
     }
 
-    await this.findOne(id);
+    const asset = await this.findOne(id);
+
+    if (asset.holder_id !== holder_id)
+      throw new UnauthorizedException('Cannot update assets from another user');
 
     const updated_asset = await this.databaseService.assets.update({
       where: { id },
@@ -83,8 +80,11 @@ export class AssetsService {
     };
   }
 
-  async delete(id: number) {
-    await this.findOne(id);
+  async delete(id: number, holder_id: number) {
+    const asset = await this.findOne(id);
+
+    if (asset.holder_id !== holder_id)
+      throw new UnauthorizedException('Cannot delete assets from another user');
 
     await this.databaseService.assets.delete({ where: { id } });
 
