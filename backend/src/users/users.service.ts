@@ -56,6 +56,16 @@ export class UsersService {
     return user;
   }
 
+  async findOneByUsername(username: string) {
+    const user = await this.databaseService.users.findUnique({
+      where: { username },
+    });
+
+    if (!user) throw new NotFoundException('User not found');
+
+    return user;
+  }
+
   async update(id: number, updateUserDTO: Prisma.usersUpdateInput) {
     if ('id' in updateUserDTO) {
       // this is to prevent updating the id
