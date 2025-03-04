@@ -4,16 +4,13 @@ import { useMemo, useRef } from 'react';
 
 import { useAppSelector } from '@/redux/hooks';
 import formatCurrency from '@/utils/currency-formatter';
+import { ByDateTimeAlgorithm } from '@/utils/algorithms';
 
 import { LineChart } from '@mui/x-charts';
 import { Box, useMediaQuery, useTheme } from '@mui/material';
 
 const mainColor = '#318ede';
 const secondaryColor = '#ffffff40';
-
-function sortByDateTime(a: UserEntry, b: UserEntry) {
-  return new Date(a.date).getTime() - new Date(b.date).getTime();
-}
 
 export default function Chart() {
   const divRef = useRef<HTMLDivElement>(null);
@@ -26,7 +23,7 @@ export default function Chart() {
 
   const sortedData = useMemo(() => {
     let sum = 0;
-    return data.toSorted(sortByDateTime).map((row, index) => {
+    return data.toSorted(ByDateTimeAlgorithm).map((row, index) => {
       sum += row.price;
       return { ...row, price: sum, date: new Date(row.date).getTime() + index };
     });

@@ -3,8 +3,9 @@
 import { useMemo } from 'react';
 import { useAppSelector } from '@/redux/hooks';
 import formatCurrency from '@/utils/currency-formatter';
+import { ByDateTimeAlgorithm } from '@/utils/algorithms';
 
-import { Box, Paper, Skeleton, Typography } from '@mui/material';
+import { Box, Paper, Typography } from '@mui/material';
 import { SparkLineChart } from '@mui/x-charts';
 
 interface PerformanceCardProps {
@@ -40,7 +41,10 @@ export default function PerformanceCard({ name }: PerformanceCardProps) {
   const currency = useAppSelector((state) => state.currency.value);
   const entries = useAppSelector((state) => state.user.entries);
 
-  const data = useMemo(() => getSequencialSumArray(entries), [entries]);
+  const data = useMemo(
+    () => getSequencialSumArray(entries.toSorted(ByDateTimeAlgorithm)),
+    [entries]
+  );
   const total = data.length > 0 ? data[data.length - 1] : 0;
   const delta = calculateDelta(data[0], total);
 
