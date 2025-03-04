@@ -20,10 +20,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import formatCurrency from '@/utils/currency-formatter';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { setEntry, removeEntry } from '@/redux/features/user/userSlice';
+import { removeEntry } from '@/redux/features/user/userSlice';
 
-import { useCallback, useEffect, useState } from 'react';
-import { getEntriesFromUser, removeUserEntry } from '@/utils/actions';
+import { useCallback, useState } from 'react';
+import { removeUserEntry } from '@/utils/actions';
 
 const LOGO_SIZE = 16;
 
@@ -36,7 +36,7 @@ function getIcon(logo_name: string) {
   return `https://logo.clearbit.com/${normalized_logo_name}.com`;
 }
 
-export default function FinanceEntries({ userId }: { userId: number }) {
+export default function FinanceEntries() {
   const dispatch = useAppDispatch();
 
   const currency = useAppSelector((state) => state.currency.value);
@@ -44,14 +44,6 @@ export default function FinanceEntries({ userId }: { userId: number }) {
 
   const theme = useTheme();
   const isMediumOrLarger = useMediaQuery(theme.breakpoints.up('md'));
-
-  useEffect(() => {
-    getEntriesFromUser()
-      .then((res) => {
-        dispatch(setEntry(res));
-      })
-      .catch((err) => console.error(err));
-  }, [userId]);
 
   const handleRemoveEntry = useCallback(
     (id: number) => {
