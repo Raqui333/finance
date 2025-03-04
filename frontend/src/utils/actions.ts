@@ -40,7 +40,7 @@ export async function removeUserEntry(id: number) {
   return await fetchAPI(`/assets/${id}`, { method: 'DELETE' });
 }
 
-export async function createUserEntry(id: number, entry: UserEntryForPost) {
+export async function createUserEntry(entry: UserEntryForPost) {
   return await fetchAPI(`/assets`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
