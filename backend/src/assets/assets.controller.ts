@@ -65,7 +65,6 @@ export class AssetsController {
     description: 'Succefully deleted an asset',
   })
   delete(@Param('id') id: number, @Req() req: JwtRequest) {
-    console.log('chegou');
     return this.assetsService.delete(id, req.user.sub);
   }
 }
