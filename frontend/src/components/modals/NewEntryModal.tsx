@@ -18,13 +18,11 @@ import { useState } from 'react';
 import { createUserEntry } from '@/utils/actions';
 
 interface InsertNewEntryProps {
-  userId: number;
   isOpen: boolean;
   onClose: () => void;
 }
 
 export default function NewEntryModal({
-  userId,
   isOpen,
   onClose,
 }: InsertNewEntryProps) {
@@ -52,7 +50,7 @@ export default function NewEntryModal({
   const onSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    createUserEntry(userId, entryForm as UserEntry)
+    createUserEntry(entryForm as UserEntry)
       .then((res) => {
         dispatch(addEntry(res.asset));
         onClose();
