@@ -46,7 +46,7 @@ export default function FinanceEntries({ userId }: { userId: number }) {
   const isMediumOrLarger = useMediaQuery(theme.breakpoints.up('md'));
 
   useEffect(() => {
-    getEntriesFromUser(userId)
+    getEntriesFromUser()
       .then((res) => {
         dispatch(setEntry(res));
       })

@@ -53,7 +53,7 @@ export default function Profile({ userId }: { userId: number }) {
 
   useEffect(() => {
     setLoading(true);
-    getUserProfile(userId)
+    getUserProfile()
       .then((res) => {
         dispatch(setName(res.name));
       })
