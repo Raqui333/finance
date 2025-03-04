@@ -1,12 +1,19 @@
 'use server';
 
+import { cookies } from 'next/headers';
+
 const API = process.env.API_URL || 'http://localhost:3000';
 
 async function fetchAPI(endpoint: string, options: RequestInit = {}) {
   try {
+    const token = await cookies().then((res) => res.get('access_token')?.value);
+
+    if (!token) throw new Error('No Token Request');
+
     const resp = await fetch(`${API}${endpoint}`, {
       cache: 'no-store',
       ...options,
+      headers: { ...options.headers, Authorization: `Bearer ${token}` },
     });
 
     if (resp.status === 404) return [];
@@ -22,12 +29,11 @@ async function fetchAPI(endpoint: string, options: RequestInit = {}) {
   }
 }
 
-export async function getEntriesFromUser(id: number) {
-  return await fetchAPI(`/assets/from/${id}`);
+export async function getUserProfile() {
+  return await fetchAPI(`/users`);
 }
-
-export async function getUserProfile(id: number) {
-  return await fetchAPI(`/users/${id}`);
+export async function getEntriesFromUser() {
+  return await fetchAPI(`/assets`);
 }
 
 export async function removeUserEntry(id: number) {
@@ -41,7 +47,6 @@ export async function createUserEntry(id: number, entry: UserEntryForPost) {
     body: JSON.stringify({
       ...entry,
       date: new Date(entry.date).toISOString(),
-      holder_id: id,
     }),
   });
 }
