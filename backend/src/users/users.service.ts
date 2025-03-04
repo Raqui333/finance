@@ -35,17 +35,7 @@ export class UsersService {
     }
   }
 
-  async findAll() {
-    const users = await this.databaseService.users.findMany({
-      omit: { password: true },
-    });
-
-    if (!users.length) throw new NotFoundException('No users found');
-
-    return users;
-  }
-
-  async findOne(id: number) {
+  async read(id: number) {
     const user = await this.databaseService.users.findUnique({
       where: { id },
       omit: { password: true },
@@ -72,7 +62,7 @@ export class UsersService {
       throw new BadRequestException('ID cannot be updated');
     }
 
-    await this.findOne(id);
+    await this.read(id);
 
     const updated_user = await this.databaseService.users.update({
       where: { id },
@@ -85,7 +75,7 @@ export class UsersService {
   }
 
   async delete(id: number) {
-    await this.findOne(id);
+    await this.read(id);
 
     await this.databaseService.users.delete({ where: { id } });
 

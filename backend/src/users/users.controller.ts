@@ -1,55 +1,60 @@
-import { Body, Controller, Delete, Get, Param, Patch } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Req,
+} from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { Prisma } from '@prisma/client';
+import { Request } from 'express';
+
+interface JwtRequest extends Request {
+  user: {
+    sub: number;
+    username: string;
+    iat: number;
+    exp: number;
+  };
+}
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Get all users' })
+  @ApiOperation({ summary: 'Get info from the user' })
   @ApiResponse({
     status: 200,
-    description: 'Succefully returned all users',
+    description: 'Succefully returned user info',
   })
-  findAll() {
-    return this.usersService.findAll();
+  read(@Req() req: JwtRequest) {
+    return this.usersService.read(req.user.sub);
   }
 
-  @Get(':id')
-  @ApiOperation({ summary: 'Get one user' })
-  @ApiParam({ name: 'id', type: String, description: 'user ID' })
+  @Patch()
+  @ApiOperation({ summary: 'Update user info' })
   @ApiResponse({
     status: 200,
-    description: 'Succefully returned an user',
-  })
-  findOne(@Param('id') id: number) {
-    return this.usersService.findOne(id);
-  }
-
-  @Patch(':id')
-  @ApiOperation({ summary: 'Update an user' })
-  @ApiParam({ name: 'id', type: String, description: 'user ID' })
-  @ApiResponse({
-    status: 200,
-    description: 'Succefully updated an user',
+    description: 'Succefully updated the user info',
   })
   update(
-    @Param('id') id: number,
+    @Req() req: JwtRequest,
     @Body() updateUserDTO: Prisma.usersUpdateInput
   ) {
-    return this.usersService.update(id, updateUserDTO);
+    return this.usersService.update(req.user.sub, updateUserDTO);
   }
 
-  @Delete(':id')
-  @ApiOperation({ summary: 'Delete an user' })
-  @ApiParam({ name: 'id', type: String, description: 'user ID' })
+  @Delete()
+  @ApiOperation({ summary: 'Delete user' })
   @ApiResponse({
     status: 200,
     description: 'Succefully deleted an user',
   })
-  delete(@Param('id') id: number) {
-    return this.usersService.delete(id);
+  delete(@Req() req: JwtRequest) {
+    return this.usersService.delete(req.user.sub);
   }
 }
