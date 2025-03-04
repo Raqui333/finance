@@ -19,6 +19,17 @@ declare global {
   };
 
   type UserEntryForPost = Omit<UserEntry, 'id'>;
+
+  type LoginForm = {
+    username: string;
+    password: string;
+  };
+
+  type RegisterForm = {
+    username: string;
+    password: string;
+    password_confirm: string;
+  };
 }
 
 export {};
