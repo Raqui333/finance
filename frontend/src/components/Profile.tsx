@@ -7,9 +7,9 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 
 import formatCurrency from '@/utils/currency-formatter';
-import { getUserProfile } from '@/utils/actions';
+import { getEntriesFromUser, getUserProfile } from '@/utils/actions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { setName } from '@/redux/features/user/userSlice';
+import { setEntry, setName } from '@/redux/features/user/userSlice';
 
 import { useEffect, useState } from 'react';
 
@@ -35,15 +35,16 @@ const mainBoxStyle = {
   },
 };
 
-export default function Profile({ userId }: { userId: number }) {
+function calculateTotalBalance(total: number, entry: UserEntry) {
+  return total + entry.price;
+}
+
+export default function Profile() {
   const dispatch = useAppDispatch();
 
   const currency = useAppSelector((state) => state.currency.value);
   const data = useAppSelector((state) => state.user);
-  const balance = data.entries.reduce(
-    (acc: number, curr: UserEntry) => acc + curr.price,
-    0
-  );
+  const balance = data.entries.reduce(calculateTotalBalance, 0);
 
   const [isModalOpen, setModalOpen] = useState(false);
   const addClickHandler = () => setModalOpen(true);
@@ -57,9 +58,15 @@ export default function Profile({ userId }: { userId: number }) {
       .then((res) => {
         dispatch(setName(res.name));
       })
+      .catch((err) => console.error(err));
+
+    getEntriesFromUser()
+      .then((res) => {
+        dispatch(setEntry(res));
+      })
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
-  }, [userId]);
+  }, [data.name]);
 
   if (loading) return LoadingProfile();
 
@@ -84,11 +91,7 @@ export default function Profile({ userId }: { userId: number }) {
         </IconButton>
       </Box>
       {isModalOpen ? (
-        <NewEntryModal
-          userId={userId}
-          isOpen={isModalOpen}
-          onClose={closeModalHandler}
-        />
+        <NewEntryModal isOpen={isModalOpen} onClose={closeModalHandler} />
       ) : null}
     </Box>
   );
