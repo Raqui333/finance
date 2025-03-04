@@ -9,10 +9,7 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    private readonly databaseService: DatabaseService,
-    private readonly passwordService: PasswordService
-  ) {}
+  constructor(private readonly databaseService: DatabaseService) {}
 
   async create(createUserDTO: Prisma.usersCreateInput) {
     try {
@@ -25,16 +22,10 @@ export class UsersService {
 
       if (userExists) throw new BadRequestException('Username already taken');
 
-      // hash password
-      const password = this.passwordService.hashPassword(
-        createUserDTO.password
-      );
-
       const { id } = await this.databaseService.users.create({
         data: {
           ...createUserDTO,
           username,
-          password,
         },
       });
 
