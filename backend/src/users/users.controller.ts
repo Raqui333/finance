@@ -1,25 +1,7 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Req,
-} from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Patch, Req } from '@nestjs/common';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { Prisma } from '@prisma/client';
-import { Request } from 'express';
-
-interface JwtRequest extends Request {
-  user: {
-    sub: number;
-    username: string;
-    iat: number;
-    exp: number;
-  };
-}
 
 @Controller('users')
 export class UsersController {
