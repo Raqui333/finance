@@ -6,8 +6,6 @@ import PerformanceCard from '@/components/PerformanceCard';
 import FinanceEntries from '@/components/FinanceEntries';
 import Profile from '@/components/Profile';
 
-const USER_ID_TEST = 9;
-
 export default function Home() {
   return (
     <Container
@@ -38,11 +36,11 @@ export default function Home() {
             gap: 1,
           }}
         >
-          <Profile userId={USER_ID_TEST} />
+          <Profile />
           <PerformanceCard name="Performace" />
         </Box>
       </Box>
-      <FinanceEntries userId={USER_ID_TEST} />
+      <FinanceEntries />
     </Container>
   );
 }
