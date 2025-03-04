@@ -44,7 +44,7 @@ export class AssetsController {
     return this.assetsService.read(req.user.sub);
   }
 
-  @Patch()
+  @Patch(':id')
   @ApiOperation({ summary: 'Update an asset' })
   @ApiResponse({
     status: 200,
@@ -58,13 +58,14 @@ export class AssetsController {
     return this.assetsService.update(id, updateAssetDTO, req.user.sub);
   }
 
-  @Delete()
+  @Delete(':id')
   @ApiOperation({ summary: 'Delete an asset' })
   @ApiResponse({
     status: 200,
     description: 'Succefully deleted an asset',
   })
   delete(@Param('id') id: number, @Req() req: JwtRequest) {
+    console.log('chegou');
     return this.assetsService.delete(id, req.user.sub);
   }
 }
