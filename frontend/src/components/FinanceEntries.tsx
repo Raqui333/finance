@@ -27,13 +27,13 @@ import { removeUserEntry } from '@/utils/actions';
 
 const LOGO_SIZE = 16;
 
-function getIcon(logo_name: string) {
-  const normalized_logo_name = logo_name
+function getIcon(name: string) {
+  const normalized_name = name
     .normalize('NFD')
     .replace(/\s|[^\w\-]/g, '')
     .toLocaleLowerCase();
 
-  return `https://logo.clearbit.com/${normalized_logo_name}.com`;
+  return `https://logo.clearbit.com/${normalized_name}.com`;
 }
 
 export default function FinanceEntries() {
@@ -62,7 +62,7 @@ export default function FinanceEntries() {
       {data.length ? (
         <Table>
           <TableBody>
-            {data.map((row, index) => (
+            {[...data].reverse().map((row, index) => (
               <TableRow
                 key={index}
                 sx={(theme) => ({
