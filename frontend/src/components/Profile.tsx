@@ -1,19 +1,21 @@
 'use client';
 
-import { Box, Paper, Typography, IconButton, Skeleton } from '@mui/material';
+import { Box, Paper, Typography, Skeleton, Button } from '@mui/material';
 
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+import LogoutIcon from '@mui/icons-material/Logout';
+import AddIcon from '@mui/icons-material/Add';
+import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
 
 import formatCurrency from '@/utils/currency-formatter';
-import { getEntriesFromUser, getUserProfile } from '@/utils/actions';
+import { getEntriesFromUser, getUserProfile, logout } from '@/utils/actions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setEntry, setName } from '@/redux/features/user/userSlice';
 
 import { useEffect, useState } from 'react';
 
 import NewEntryModal from './modals/NewEntryModal';
+import { useRouter } from 'next/navigation';
 
 const flexColumn = {
   display: 'flex',
@@ -29,7 +31,7 @@ const flexRow = {
 const mainBoxStyle = {
   ...flexColumn,
   width: '100%',
-  gap: 1,
+  gap: 2,
   '&:hover': {
     filter: 'brightness(1.2)',
   },
@@ -40,6 +42,7 @@ function calculateTotalBalance(total: number, entry: UserEntry) {
 }
 
 export default function Profile() {
+  const router = useRouter();
   const dispatch = useAppDispatch();
 
   const currency = useAppSelector((state) => state.currency.value);
@@ -49,6 +52,14 @@ export default function Profile() {
   const [isModalOpen, setModalOpen] = useState(false);
   const addClickHandler = () => setModalOpen(true);
   const closeModalHandler = () => setModalOpen(false);
+
+  const logoutHandler = () => {
+    logout()
+      .then(() => {
+        router.push('/auth/login');
+      })
+      .catch((err) => console.error(err));
+  };
 
   const [loading, setLoading] = useState(true);
 
@@ -74,21 +85,32 @@ export default function Profile() {
     <Box component={Paper} sx={{ ...mainBoxStyle }}>
       <Box sx={{ ...flexRow, gap: 1 }}>
         <AccountCircleIcon sx={{ fontSize: 50 }} />
-        <Typography>Hello, {data.name}</Typography>
+        <Typography color="primary">Hello, </Typography>
+        <Typography>{data.name}</Typography>
       </Box>
       <Box sx={{ ...flexColumn }}>
-        <Typography sx={{ fontSize: 15 }}>Balance</Typography>
-        <Typography sx={{ fontSize: 35 }}>
+        <Typography sx={{ fontSize: 15 }}>Account balance</Typography>
+        <Typography
+          sx={{ fontSize: 35, display: 'flex', alignItems: 'center', gap: 1 }}
+        >
+          <AccountBalanceWalletOutlinedIcon color="primary" />
           {formatCurrency(balance, currency)}
         </Typography>
       </Box>
-      <Box sx={{ ...flexRow, justifyContent: 'center', gap: 10 }}>
-        <IconButton onClick={addClickHandler}>
-          <AddCircleIcon sx={{ fontSize: 40, color: 'primary.main' }} />
-        </IconButton>
-        <IconButton>
-          <RemoveCircleIcon sx={{ fontSize: 40, color: 'primary.main' }} />
-        </IconButton>
+      <Box sx={{ ...flexRow, justifyContent: 'center', gap: 1 }}>
+        <Button
+          size="small"
+          variant="contained"
+          onClick={addClickHandler}
+          sx={{ flex: 1 }}
+        >
+          <AddIcon fontSize="small" sx={{ mr: 1 }} />
+          New Entry
+        </Button>
+        <Button size="small" variant="outlined" onClick={logoutHandler}>
+          <LogoutIcon fontSize="small" sx={{ mr: 1 }} />
+          Log Out
+        </Button>
       </Box>
       {isModalOpen ? (
         <NewEntryModal isOpen={isModalOpen} onClose={closeModalHandler} />
