@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public } from '@/decorators/public.decorator';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -29,5 +29,10 @@ export class AuthController {
   })
   signUp(@Body() RegisterDTO: RegisterDTO) {
     return this.authService.signUp(RegisterDTO);
+  }
+
+  @Get('validate-token')
+  validade() {
+    return true;
   }
 }
