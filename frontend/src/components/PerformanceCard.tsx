@@ -8,6 +8,10 @@ import { ByDateTimeAlgorithm } from '@/utils/algorithms';
 import { Box, Paper, Typography } from '@mui/material';
 import { SparkLineChart } from '@mui/x-charts';
 
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import TrendingDownIcon from '@mui/icons-material/TrendingDown';
+
 interface PerformanceCardProps {
   name: string;
 }
@@ -50,18 +54,45 @@ export default function PerformanceCard({ name }: PerformanceCardProps) {
 
   return (
     <Box component={Paper} sx={{ ...mainBoxStyle }}>
-      <Box sx={{ alignSelf: 'flex-start' }}>
-        <Typography>{name}</Typography>
-        <Typography
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          width: '100%',
+        }}
+      >
+        <Typography fontSize={20}>{name}</Typography>
+        <AttachMoneyIcon
+          color="primary"
           sx={{
-            fontSize: '13px',
-            fontWeight: 'bold',
-            color: total >= 0 ? 'success.main' : 'error.main',
+            display: 'flex',
+            alignItems: 'center',
+            backgroundColor: 'secondary.main',
+            borderRadius: '100%',
+            fontSize: 40,
+            p: 1,
           }}
-        >
-          {formatCurrency(total, currency) + ` (${delta.toFixed(2)}%)`}
-        </Typography>
+        />
       </Box>
+      <Typography
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          alignSelf: 'flex-start',
+          fontSize: 20,
+          color: total >= 0 ? 'success.main' : 'error.main',
+          gap: 1,
+        }}
+      >
+        {total >= 0 ? (
+          <TrendingUpIcon sx={{ fontSize: 20 }} />
+        ) : (
+          <TrendingDownIcon sx={{ fontSize: 20 }} />
+        )}
+
+        {`${delta.toFixed(2)}%`}
+      </Typography>
       <SparkLineChart
         data={data}
         width={300}
