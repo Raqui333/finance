@@ -37,7 +37,7 @@ export default function Home() {
           }}
         >
           <Profile />
-          <PerformanceCard name="Performace" />
+          <PerformanceCard name="Performance" />
         </Box>
       </Box>
       <FinanceEntries />
