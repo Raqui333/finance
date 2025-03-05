@@ -26,10 +26,13 @@ declare global {
   };
 
   type RegisterForm = {
+    name: string;
     username: string;
     password: string;
     password_confirm: string;
   };
+
+  type RegisterFormForPost = Omit<RegisterForm, 'password_confirm'>;
 }
 
 export {};
