@@ -19,9 +19,14 @@ async function fetchAPI(endpoint: string, options: RequestInit = {}) {
       headers: { ...options.headers, Authorization: `Bearer ${token}` },
     });
 
-    if (resp.status === 404) return [];
-
     if (!resp.ok) {
+      switch (resp.status) {
+        case 404:
+          return [];
+        default:
+          break;
+      }
+
       throw new Error(`Status ${resp.status}: ${resp.statusText}`);
     }
 
@@ -32,10 +37,11 @@ async function fetchAPI(endpoint: string, options: RequestInit = {}) {
   }
 }
 
-export async function getUserProfile() {
+export async function getProfile() {
   return await fetchAPI('/users');
 }
-export async function getEntriesFromUser() {
+
+export async function getEntries() {
   return await fetchAPI('/assets');
 }
 
