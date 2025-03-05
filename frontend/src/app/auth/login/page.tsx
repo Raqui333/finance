@@ -11,12 +11,14 @@ import {
   Link,
 } from '@mui/material';
 
-import PersonIcon from '@mui/icons-material/Person';
+import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined';
+import LinearProgress from '@mui/material/LinearProgress';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+
 import { login } from '@/utils/actions';
 
 interface InputProps {
@@ -25,6 +27,7 @@ interface InputProps {
   type: string;
   placeholder: string;
   icon: React.ReactNode;
+  disabled?: boolean;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -71,6 +74,7 @@ const initialForm = {
 export default function Login() {
   const router = useRouter();
   const [form, setForm] = useState<LoginForm>(initialForm);
+  const [loading, setLoading] = useState(false);
 
   const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -83,6 +87,7 @@ export default function Login() {
 
   const onSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setLoading(true);
     login(form.username, form.password)
       .then(() => {
         router.push('/');
@@ -105,14 +110,16 @@ export default function Login() {
           sx={{ ...formSectionStyle }}
         >
           <Input
+            disabled={loading}
             name="username"
             title="Username"
             type="text"
             placeholder="Enter your username"
-            icon={<PersonIcon />}
+            icon={<AlternateEmailIcon />}
             onChange={onChangeHandler}
           />
           <Input
+            disabled={loading}
             name="password"
             title="Password"
             type="password"
@@ -120,7 +127,7 @@ export default function Login() {
             icon={<LockOutlinedIcon />}
             onChange={onChangeHandler}
           />
-          <Button type="submit" variant="contained">
+          <Button type="submit" variant="contained" disabled={loading}>
             Login
             <LoginOutlinedIcon fontSize="small" sx={{ ml: 1 }} />
           </Button>
@@ -131,18 +138,28 @@ export default function Login() {
             Register here
           </Link>
         </Box>
+        <Box sx={{ width: '100%' }}>{loading && <LinearProgress />}</Box>
       </Box>
     </Container>
   );
 }
 
-function Input({ name, title, type, placeholder, icon, onChange }: InputProps) {
+function Input({
+  name,
+  title,
+  type,
+  placeholder,
+  icon,
+  disabled = false,
+  onChange,
+}: InputProps) {
   return (
     <Box
       sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 1 }}
     >
       <Typography>{title}</Typography>
       <TextField
+        disabled={disabled}
         name={name}
         type={type}
         placeholder={placeholder}
