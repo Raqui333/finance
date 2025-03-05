@@ -8,7 +8,7 @@ import AddIcon from '@mui/icons-material/Add';
 import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
 
 import formatCurrency from '@/utils/currency-formatter';
-import { getEntriesFromUser, getUserProfile, logout } from '@/utils/actions';
+import { getEntries, getProfile, logout } from '@/utils/actions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setEntry, setName } from '@/redux/features/user/userSlice';
 
@@ -65,19 +65,15 @@ export default function Profile() {
 
   useEffect(() => {
     setLoading(true);
-    getUserProfile()
-      .then((res) => {
-        dispatch(setName(res.name));
-      })
+    getProfile()
+      .then((res) => dispatch(setName(res.name)))
       .catch((err) => console.error(err));
 
-    getEntriesFromUser()
-      .then((res) => {
-        dispatch(setEntry(res));
-      })
+    getEntries()
+      .then((res) => dispatch(setEntry(res)))
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
-  }, [data.name]);
+  }, []);
 
   if (loading) return LoadingProfile();
 
