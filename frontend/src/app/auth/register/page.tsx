@@ -13,10 +13,12 @@ import {
 
 import PersonIcon from '@mui/icons-material/Person';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { login } from '@/utils/actions';
+
+import { register } from '@/utils/actions';
 
 interface InputProps {
   name: string;
@@ -24,6 +26,7 @@ interface InputProps {
   type: string;
   placeholder: string;
   icon: React.ReactNode;
+  required?: boolean;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -63,17 +66,19 @@ const formSectionStyle = {
 };
 
 const initialForm = {
+  name: '',
   username: '',
   password: '',
   password_confirm: '',
 };
 
-// todo
-// ux wrinting
-
 export default function Register() {
   const router = useRouter();
   const [form, setForm] = useState<RegisterForm>(initialForm);
+  const [error, setError] = useState({
+    isError: false,
+    message: '',
+  });
 
   const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -86,7 +91,22 @@ export default function Register() {
 
   const onSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // todo
+
+    console.log(form);
+
+    if (form.password !== form.password_confirm) {
+      setError({
+        isError: true,
+        message: "Your passwords don't match. Please try again.",
+      });
+      return;
+    }
+
+    register(form)
+      .then(() => {
+        router.push('/auth/login');
+      })
+      .catch((err) => console.error(err));
   };
 
   return (
@@ -104,14 +124,25 @@ export default function Register() {
           sx={{ ...formSectionStyle }}
         >
           <Input
-            name="username"
-            title="Username"
+            required={true}
+            name="name"
+            title="Name"
             type="text"
-            placeholder="Enter your username"
+            placeholder="Enter your name"
             icon={<PersonIcon />}
             onChange={onChangeHandler}
           />
           <Input
+            required={true}
+            name="username"
+            title="Username"
+            type="text"
+            placeholder="Enter your username"
+            icon={<AlternateEmailIcon />}
+            onChange={onChangeHandler}
+          />
+          <Input
+            required={true}
             name="password"
             title="Password"
             type="password"
@@ -120,13 +151,19 @@ export default function Register() {
             onChange={onChangeHandler}
           />
           <Input
-            name="passwordconfirm"
+            required={true}
+            name="password_confirm"
             title="Confirm your password"
             type="password"
             placeholder="Confirm your password"
             icon={<LockOutlinedIcon />}
             onChange={onChangeHandler}
           />
+          {error.isError && (
+            <Typography color="error.main" sx={{ alignSelf: 'center' }}>
+              {error.message}
+            </Typography>
+          )}
           <Button type="submit" variant="contained">
             Register now
           </Button>
@@ -142,17 +179,36 @@ export default function Register() {
   );
 }
 
-function Input({ name, title, type, placeholder, icon, onChange }: InputProps) {
+function Input({
+  name,
+  title,
+  type,
+  placeholder,
+  icon,
+  required,
+  onChange,
+}: InputProps) {
   return (
     <Box
       sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 1 }}
     >
-      <Typography>{title}</Typography>
+      <Typography>{required ? `${title} *` : title}</Typography>
       <TextField
+        autoComplete="off"
+        required={required}
         name={name}
         type={type}
         placeholder={placeholder}
         onChange={onChange}
+        onKeyDown={
+          name === 'username'
+            ? (event) => {
+                if (event.key === ' ') {
+                  event.preventDefault();
+                }
+              }
+            : undefined
+        }
         slotProps={{
           input: {
             startAdornment: (
