@@ -67,3 +67,18 @@ export async function login(username: string, password: string) {
     })
   );
 }
+
+export async function register(form: RegisterFormForPost) {
+  return await fetchAPI('/auth/register', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      ...form,
+      email: `${form.username}@financedashboard.com`,
+    }),
+  });
+}
+
+export async function logout() {
+  await cookies().then((res) => res.delete('access_token'));
+}
