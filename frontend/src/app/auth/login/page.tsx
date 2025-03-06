@@ -75,6 +75,10 @@ export default function Login() {
   const router = useRouter();
   const [form, setForm] = useState<LoginForm>(initialForm);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState({
+    isError: false,
+    message: '',
+  });
 
   const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -87,12 +91,34 @@ export default function Login() {
 
   const onSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     setLoading(true);
     login(form.username, form.password)
       .then(() => {
         router.push('/');
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        setLoading(false);
+
+        const error_body = JSON.parse(err.message);
+
+        switch (error_body.statusCode) {
+          case 404:
+            setError({
+              isError: true,
+              message: 'Invalid username or password',
+            });
+            break;
+          case 401:
+            setError({
+              isError: true,
+              message: 'Incorrect credentials. Please try again',
+            });
+            break;
+          default:
+            break;
+        }
+      });
   };
 
   return (
@@ -127,6 +153,11 @@ export default function Login() {
             icon={<LockOutlinedIcon />}
             onChange={onChangeHandler}
           />
+          {error.isError && (
+            <Typography color="error.main" sx={{ alignSelf: 'center' }}>
+              {error.message}
+            </Typography>
+          )}
           <Button type="submit" variant="contained" disabled={loading}>
             Login
             <LoginOutlinedIcon fontSize="small" sx={{ ml: 1 }} />
@@ -159,6 +190,7 @@ function Input({
     >
       <Typography>{title}</Typography>
       <TextField
+        required
         disabled={disabled}
         name={name}
         type={type}
