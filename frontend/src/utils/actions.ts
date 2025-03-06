@@ -4,36 +4,41 @@ import { cookies } from 'next/headers';
 
 const API = process.env.API_URL || 'http://localhost:3000';
 
-const public_routes = ['/auth/login', '/auth/register'];
+const public_routes = [
+  '/auth/login',
+  '/auth/register',
+  '/users/validate-username',
+];
 
 async function fetchAPI(endpoint: string, options: RequestInit = {}) {
   try {
     const token = await cookies().then((res) => res.get('access_token')?.value);
 
-    if (!public_routes.includes(endpoint) && !token)
+    // matches routes that starts with any of the public routes
+    const routesPattern = new RegExp(
+      `^${public_routes.join('|').replace('/', '\\/')}`
+    );
+
+    if (!routesPattern.test(endpoint) && !token)
       throw new Error('No Token Request');
 
-    const resp = await fetch(`${API}${endpoint}`, {
+    const response = await fetch(`${API}${endpoint}`, {
       cache: 'no-store',
       ...options,
       headers: { ...options.headers, Authorization: `Bearer ${token}` },
     });
 
-    if (!resp.ok) {
-      switch (resp.status) {
-        case 404:
-          return [];
-        default:
-          break;
-      }
+    const data = await response.json();
 
-      throw new Error(`Status ${resp.status}: ${resp.statusText}`);
+    if (!response.ok) {
+      if (response.status === 404 && !endpoint.includes('/auth')) return [];
+
+      throw new Error(JSON.stringify(data));
     }
 
-    return await resp.json();
+    return data;
   } catch (error) {
-    if (error instanceof Error)
-      throw new Error(`Error trying to fetch API: ${error.message}`);
+    if (error instanceof Error) throw new Error(error.message);
   }
 }
 
@@ -83,6 +88,10 @@ export async function register(form: RegisterFormForPost) {
       email: `${form.username}@financedashboard.com`,
     }),
   });
+}
+
+export async function validateUsername(username: string) {
+  return await fetchAPI(`/users/validate-username/${username}`);
 }
 
 export async function logout() {
