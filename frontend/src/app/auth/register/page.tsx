@@ -245,7 +245,7 @@ export default function Register() {
   );
 }
 
-function Input({ title, icon, onChange, required, ...rest }: InputProps) {
+function Input({ title, icon, required, ...rest }: InputProps) {
   return (
     <Box
       sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 1 }}
@@ -254,7 +254,6 @@ function Input({ title, icon, onChange, required, ...rest }: InputProps) {
       <TextField
         required
         autoComplete="off"
-        onChange={onChange}
         slotProps={{
           input: {
             startAdornment: (
