@@ -17,6 +17,8 @@ import { addEntry } from '@/redux/features/user/userSlice';
 import { useState } from 'react';
 import { createUserEntry } from '@/utils/actions';
 
+import PaymentsIcon from '@mui/icons-material/Payments';
+
 interface InsertNewEntryProps {
   isOpen: boolean;
   onClose: () => void;
@@ -94,7 +96,10 @@ export default function NewEntryModal({
           },
         })}
       >
-        <Typography variant="h6">New Entry</Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <PaymentsIcon sx={{ mr: 1 }} />
+          <Typography variant="h6">New Entry</Typography>
+        </Box>
         <Divider />
         <Box
           component="form"
