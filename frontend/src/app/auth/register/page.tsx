@@ -15,19 +15,14 @@ import PersonIcon from '@mui/icons-material/Person';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { register } from '@/utils/actions';
+import { register, validateUsername } from '@/utils/actions';
 
-interface InputProps {
-  name: string;
+interface InputProps extends React.ComponentProps<typeof TextField> {
   title: string;
-  type: string;
-  placeholder: string;
   icon: React.ReactNode;
-  required?: boolean;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const flexColumn = {
@@ -75,39 +70,97 @@ const initialForm = {
 export default function Register() {
   const router = useRouter();
   const [form, setForm] = useState<RegisterForm>(initialForm);
+  const [availability, setAvailability] = useState<null | boolean>(null);
   const [error, setError] = useState({
     isError: false,
     message: '',
   });
 
-  const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
+  useEffect(() => {
+    const validate = async () => {
+      if (!form.username) {
+        setAvailability(null);
+        return;
+      }
 
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+      try {
+        await validateUsername(form.username);
+        setAvailability(true);
+      } catch {
+        setAvailability(false);
+      }
+    };
 
-  const onSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+    const delay = setTimeout(validate, 500);
+    return () => clearTimeout(delay);
+  }, [form.username]);
 
-    console.log(form);
+  const onChangeHandler = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setError((prev) => ({ ...prev, isError: false }));
+      const { name, value } = event.target;
 
-    if (form.password !== form.password_confirm) {
-      setError({
-        isError: true,
-        message: "Your passwords don't match. Please try again.",
-      });
-      return;
-    }
+      setForm((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    },
+    []
+  );
 
-    register(form)
-      .then(() => {
-        router.push('/auth/login');
-      })
-      .catch((err) => console.error(err));
-  };
+  const onSubmitHandler = useCallback(
+    (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+
+      const validations = [
+        {
+          condition: form.password !== form.password_confirm,
+          message: "Your passwords don't match. Please try again",
+        },
+        {
+          condition: availability === false,
+          message: 'Please choose a different username',
+        },
+        {
+          condition: form.password.length < 8,
+          message: 'Password must be at least 8 characters long',
+        },
+      ];
+
+      const validationError = validations.find(
+        (validation) => validation.condition
+      );
+
+      if (validationError) {
+        setError({
+          isError: true,
+          message: validationError.message,
+        });
+        return;
+      }
+
+      register(form)
+        .then(() => {
+          router.push('/auth/login');
+        })
+        .catch((err) => console.error(err));
+    },
+    [form, availability]
+  );
+
+  const color =
+    availability === true
+      ? 'success'
+      : availability === false
+      ? 'error'
+      : undefined;
+
+  const helperText =
+    availability === true
+      ? 'This username is available'
+      : availability === false
+      ? 'This username is already in use'
+      : undefined;
 
   return (
     <Container sx={{ ...mainContainerStyle }}>
@@ -124,7 +177,7 @@ export default function Register() {
           sx={{ ...formSectionStyle }}
         >
           <Input
-            required={true}
+            required
             name="name"
             title="Name"
             type="text"
@@ -133,25 +186,38 @@ export default function Register() {
             onChange={onChangeHandler}
           />
           <Input
-            required={true}
+            required
             name="username"
             title="Username"
             type="text"
             placeholder="Enter your username"
             icon={<AlternateEmailIcon />}
             onChange={onChangeHandler}
+            color={color}
+            helperText={helperText}
+            error={availability === false && true}
+            onKeyDown={(event) => {
+              if (event.key === ' ') event.preventDefault();
+            }}
+            slotProps={{
+              formHelperText: {
+                sx: {
+                  color: availability ? 'success.main' : 'error.main',
+                },
+              },
+            }}
           />
           <Input
-            required={true}
+            required
             name="password"
-            title="Password"
+            title="Password (at least 8 characters)"
             type="password"
             placeholder="Enter your password"
             icon={<LockOutlinedIcon />}
             onChange={onChangeHandler}
           />
           <Input
-            required={true}
+            required
             name="password_confirm"
             title="Confirm your password"
             type="password"
@@ -179,36 +245,16 @@ export default function Register() {
   );
 }
 
-function Input({
-  name,
-  title,
-  type,
-  placeholder,
-  icon,
-  required,
-  onChange,
-}: InputProps) {
+function Input({ title, icon, onChange, required, ...rest }: InputProps) {
   return (
     <Box
       sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 1 }}
     >
       <Typography>{required ? `${title} *` : title}</Typography>
       <TextField
+        required
         autoComplete="off"
-        required={required}
-        name={name}
-        type={type}
-        placeholder={placeholder}
         onChange={onChange}
-        onKeyDown={
-          name === 'username'
-            ? (event) => {
-                if (event.key === ' ') {
-                  event.preventDefault();
-                }
-              }
-            : undefined
-        }
         slotProps={{
           input: {
             startAdornment: (
@@ -218,6 +264,7 @@ function Input({
             ),
           },
         }}
+        {...rest}
       />
     </Box>
   );
