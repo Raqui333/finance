@@ -16,19 +16,14 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined';
 import LinearProgress from '@mui/material/LinearProgress';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { login } from '@/utils/actions';
 
-interface InputProps {
-  name: string;
+interface InputProps extends React.ComponentProps<typeof TextField> {
   title: string;
-  type: string;
-  placeholder: string;
   icon: React.ReactNode;
-  disabled?: boolean;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const flexColumn = {
@@ -80,46 +75,54 @@ export default function Login() {
     message: '',
   });
 
-  const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
+  const onChangeHandler = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setError((prev) => ({ ...prev, isError: false }));
+      const { name, value } = event.target;
 
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+      setForm((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    },
+    []
+  );
 
-  const onSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const onSubmitHandler = useCallback(
+    (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
 
-    setLoading(true);
-    login(form.username, form.password)
-      .then(() => {
-        router.push('/');
-      })
-      .catch((err) => {
-        setLoading(false);
+      setLoading(true);
+      login(form.username, form.password)
+        .then(() => {
+          router.push('/');
+        })
+        .catch((err) => {
+          setLoading(false);
 
-        const error_body = JSON.parse(err.message);
+          const error_body = JSON.parse(err.message);
 
-        switch (error_body.statusCode) {
-          case 404:
-            setError({
-              isError: true,
+          const validations = [
+            {
+              condition: error_body.statusCode === 404,
               message: 'Invalid username or password',
-            });
-            break;
-          case 401:
-            setError({
-              isError: true,
+            },
+            {
+              condition: error_body.statusCode === 401,
               message: 'Incorrect credentials. Please try again',
-            });
-            break;
-          default:
-            break;
-        }
-      });
-  };
+            },
+          ];
+
+          const validationError = validations.find(
+            (validation) => validation.condition
+          );
+
+          if (validationError)
+            setError({ isError: true, message: validationError.message });
+        });
+    },
+    [form]
+  );
 
   return (
     <Container sx={{ ...mainContainerStyle }}>
@@ -175,15 +178,7 @@ export default function Login() {
   );
 }
 
-function Input({
-  name,
-  title,
-  type,
-  placeholder,
-  icon,
-  disabled = false,
-  onChange,
-}: InputProps) {
+function Input({ title, icon, ...rest }: InputProps) {
   return (
     <Box
       sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 1 }}
@@ -191,11 +186,6 @@ function Input({
       <Typography>{title}</Typography>
       <TextField
         required
-        disabled={disabled}
-        name={name}
-        type={type}
-        placeholder={placeholder}
-        onChange={onChange}
         slotProps={{
           input: {
             startAdornment: (
@@ -205,6 +195,7 @@ function Input({
             ),
           },
         }}
+        {...rest}
       />
     </Box>
   );
