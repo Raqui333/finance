@@ -1,9 +1,9 @@
-import { PasswordService } from '@/auth/password.service';
 import { DatabaseService } from '@/database/database.service';
 import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
@@ -80,5 +80,15 @@ export class UsersService {
     await this.databaseService.users.delete({ where: { id } });
 
     return { message: 'Successfully deleted user', user_id: id };
+  }
+
+  async validateUsername(username: string) {
+    const user = await this.databaseService.users.findUnique({
+      where: { username },
+    });
+
+    if (user) throw new UnauthorizedException('Username already taken');
+
+    return { available: true };
   }
 }
