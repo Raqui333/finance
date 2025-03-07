@@ -2,9 +2,9 @@
 
 import { useMemo, useRef } from 'react';
 
-import { useAppSelector } from '@/redux/hooks';
-import formatCurrency from '@/utils/currency-formatter';
-import { ByDateTimeAlgorithm } from '@/utils/algorithms';
+import { useAppSelector } from '@/shared/store/hooks';
+import formatCurrency from '@/shared/utils/currency-formatter';
+import { ByDateTimeAlgorithm } from '@/shared/utils/algorithms';
 
 import { LineChart } from '@mui/x-charts';
 import { Box, Typography, useMediaQuery, useTheme } from '@mui/material';

@@ -17,13 +17,13 @@ import {
 
 import Image from 'next/image';
 import DeleteIcon from '@mui/icons-material/Delete';
-import formatCurrency from '@/utils/currency-formatter';
+import formatCurrency from '@/shared/utils/currency-formatter';
 
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { removeEntry } from '@/redux/features/user/userSlice';
+import { useAppDispatch, useAppSelector } from '@/shared/store/hooks';
+import { removeEntry } from '@/shared/store/features/user/userSlice';
 
-import { useCallback, useState } from 'react';
-import { removeUserEntry } from '@/utils/actions';
+import { useCallback, useEffect, useState } from 'react';
+import { removeUserEntry } from '@/shared/utils/actions';
 
 const LOGO_SIZE = 16;
 
@@ -119,6 +119,11 @@ export default function FinanceEntries() {
 
 function ImageWithFallback({ src }: { src: string }) {
   const [imgNotFound, setImgNotFound] = useState(false);
+
+  useEffect(() => {
+    setImgNotFound(false);
+  }, [src]);
+
   return (
     <Image
       src={imgNotFound ? '/globe.svg' : src}
