@@ -11,11 +11,11 @@ import {
   Typography,
 } from '@mui/material';
 
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { addEntry } from '@/redux/features/user/userSlice';
+import { useAppDispatch, useAppSelector } from '@/shared/store/hooks';
+import { addEntry } from '@/shared/store/features/user/userSlice';
 
 import { useState } from 'react';
-import { createUserEntry } from '@/utils/actions';
+import { createUserEntry } from '@/shared/utils/actions';
 
 import PaymentsIcon from '@mui/icons-material/Payments';
 

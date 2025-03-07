@@ -3,8 +3,8 @@
 import React from 'react';
 
 import { useEffect, useState } from 'react';
-import { useAppDispatch } from '@/redux/hooks';
-import { setCurrency } from '@/redux/features/currency/currencySlice';
+import { useAppDispatch } from '@/shared/store/hooks';
+import { setCurrency } from '@/shared/store/features/currency/currencySlice';
 
 import { Box, IconButton } from '@mui/material';
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';

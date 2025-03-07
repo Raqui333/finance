@@ -18,14 +18,14 @@ import AddIcon from '@mui/icons-material/Add';
 import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
-import formatCurrency from '@/utils/currency-formatter';
-import { getEntries, getProfile, logout } from '@/utils/actions';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { setEntry, setName } from '@/redux/features/user/userSlice';
+import formatCurrency from '@/shared/utils/currency-formatter';
+import { getEntries, getProfile, logout } from '@/shared/utils/actions';
+import { useAppDispatch, useAppSelector } from '@/shared/store/hooks';
+import { setEntry, setName } from '@/shared/store/features/user/userSlice';
 
 import { useEffect, useState } from 'react';
 
-import NewEntryModal from './modals/NewEntryModal';
+import NewEntryModal from '../modals/NewEntryModal';
 import { useRouter } from 'next/navigation';
 
 const flexColumn = {

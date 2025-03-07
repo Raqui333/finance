@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import './globals.css';
+import '@/shared/styles/globals.css';
 
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
@@ -11,8 +11,8 @@ export const metadata: Metadata = {
   description: 'Finance Dashboard',
 };
 
-import ReduxProvider from '@/redux/reduxProvider';
-import MaterialThemeProvider from '@/mui/MaterialThemeProvider';
+import ReduxProvider from '@/shared/store/reduxProvider';
+import MaterialThemeProvider from '@/shared/mui/MaterialThemeProvider';
 
 export default function RootLayout({
   children,
