@@ -144,9 +144,7 @@ export default function Profile() {
         <AddIcon fontSize="small" sx={{ mr: 1 }} />
         New Entry
       </Button>
-      {isModalOpen ? (
-        <NewEntryModal isOpen={isModalOpen} onClose={closeModalHandler} />
-      ) : null}
+      <NewEntryModal isOpen={isModalOpen} onClose={closeModalHandler} />
     </Box>
   );
 }
