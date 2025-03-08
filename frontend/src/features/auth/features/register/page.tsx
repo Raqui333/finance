@@ -1,7 +1,17 @@
 'use client';
 
-import { Box, Paper, Container, Typography, Link } from '@mui/material';
+import {
+  Box,
+  Paper,
+  Container,
+  Typography,
+  Link,
+  LinearProgress,
+} from '@mui/material';
+
 import RegisterForm from './components/RegisterForm';
+
+import { useAppSelector } from '@/shared/store/hooks';
 
 const flexColumn = {
   display: 'flex',
@@ -31,6 +41,8 @@ const titleSectionStyle = {
 };
 
 export default function Register() {
+  const loading = useAppSelector((state) => state.register.loading);
+
   return (
     <Container sx={{ ...mainContainerStyle }}>
       <Box component={Paper} sx={{ ...loginBoxStyle }}>
@@ -47,6 +59,7 @@ export default function Register() {
             Login here
           </Link>
         </Box>
+        <Box sx={{ width: '100%' }}>{loading && <LinearProgress />}</Box>
       </Box>
     </Container>
   );
