@@ -9,7 +9,7 @@ import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import { useCallback, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/shared/store/hooks';
 import { register, validateUsername } from '@/shared/utils/actions';
-import { setError } from '../registerSlice';
+import { setError, setLoading } from '../registerSlice';
 import { useRouter } from 'next/navigation';
 
 const flexColumn = {
@@ -41,7 +41,7 @@ export default function RegisterForm() {
   const [form, setForm] = useState<RegisterForm>(initialForm);
   const [availability, setAvailability] = useState<null | boolean>(null);
 
-  const error = useAppSelector((state) => state.register.error);
+  const { loading, error } = useAppSelector((state) => state.register);
 
   useEffect(() => {
     const validate = async () => {
@@ -105,9 +105,13 @@ export default function RegisterForm() {
 
       register(form)
         .then(() => {
+          dispatch(setLoading(true));
           router.push('/auth/login');
         })
-        .catch((err) => console.error(err));
+        .catch((err) => {
+          dispatch(setLoading(false));
+          console.error(err);
+        });
     },
     [form, availability]
   );
@@ -134,6 +138,7 @@ export default function RegisterForm() {
     >
       <Input
         required
+        disabled={loading}
         autoComplete="off"
         name="name"
         title="Name"
@@ -144,6 +149,7 @@ export default function RegisterForm() {
       />
       <Input
         required
+        disabled={loading}
         autoComplete="off"
         name="username"
         title="Username"
@@ -167,6 +173,7 @@ export default function RegisterForm() {
       />
       <Input
         required
+        disabled={loading}
         autoComplete="off"
         name="password"
         title="Password (at least 8 characters)"
@@ -177,6 +184,7 @@ export default function RegisterForm() {
       />
       <Input
         required
+        disabled={loading}
         autoComplete="off"
         name="password_confirm"
         title="Confirm your password"
@@ -190,7 +198,7 @@ export default function RegisterForm() {
           {error.message}
         </Typography>
       )}
-      <Button type="submit" variant="contained">
+      <Button type="submit" variant="contained" disabled={loading}>
         Register now
       </Button>
     </Box>
