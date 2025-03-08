@@ -1,5 +1,5 @@
 import { Box, Button, Typography } from '@mui/material';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
@@ -44,6 +44,14 @@ export default function LoginForm() {
   const [form, setForm] = useState<LoginForm>(initialForm);
 
   const { loading, error } = useAppSelector((state) => state.login);
+
+  useEffect(
+    () => () => {
+      // run on dismount
+      dispatch(setLoading(false));
+    },
+    []
+  );
 
   const onChangeHandler = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
