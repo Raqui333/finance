@@ -28,7 +28,7 @@ const loginBoxStyle = {
   borderRadius: 5,
 };
 
-const titleSectionStyle = {
+const titleStyle = {
   color: 'primary.main',
   fontWeight: 'bold',
   fontSize: 35,
@@ -41,9 +41,7 @@ export default function Login() {
     <Container sx={{ ...mainContainerStyle }}>
       <Box component={Paper} sx={{ ...loginBoxStyle }}>
         <Box sx={{ ...flexColumn }}>
-          <Typography sx={{ ...titleSectionStyle }}>
-            Finance Dashboard
-          </Typography>
+          <Typography sx={{ ...titleStyle }}>Finance Dashboard</Typography>
           <Typography>Welcome back! Please login to continue</Typography>
         </Box>
         <LoginForm />
