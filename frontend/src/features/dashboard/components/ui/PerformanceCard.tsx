@@ -81,11 +81,11 @@ export default function PerformanceCard({ name }: PerformanceCardProps) {
           alignItems: 'center',
           alignSelf: 'flex-start',
           fontSize: 20,
-          color: total >= 0 ? 'success.main' : 'error.main',
+          color: delta >= 0 ? 'success.main' : 'error.main',
           gap: 1,
         }}
       >
-        {total >= 0 ? (
+        {delta >= 0 ? (
           <TrendingUpIcon sx={{ fontSize: 20 }} />
         ) : (
           <TrendingDownIcon sx={{ fontSize: 20 }} />
