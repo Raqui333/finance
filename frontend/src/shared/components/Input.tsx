@@ -5,14 +5,20 @@ interface InputProps extends React.ComponentProps<typeof TextField> {
   icon: React.ReactNode;
 }
 
+const inputStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  width: '100%',
+  gap: 1,
+};
+
 export default function Input({ title, icon, ...rest }: InputProps) {
   return (
-    <Box
-      sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 1 }}
-    >
+    <Box sx={{ ...inputStyle }}>
       <Typography>{title}</Typography>
       <TextField
         required
+        {...rest}
         slotProps={{
           input: {
             startAdornment: (
@@ -21,8 +27,8 @@ export default function Input({ title, icon, ...rest }: InputProps) {
               </InputAdornment>
             ),
           },
+          ...rest.slotProps,
         }}
-        {...rest}
       />
     </Box>
   );
