@@ -9,6 +9,7 @@ import {
   Paper,
   TextField,
   Typography,
+  Zoom,
 } from '@mui/material';
 
 import { useAppDispatch, useAppSelector } from '@/shared/store/hooks';
@@ -64,104 +65,103 @@ export default function NewEntryModal({
   };
 
   return (
-    <Modal open={isOpen} onClose={onClose}>
-      <Box
-        component={Paper}
-        sx={(theme) => ({
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 1,
-          position: 'absolute',
-
-          width: {
-            md: '50%',
-            xs: '100%',
-          },
-          top: {
-            md: '50%',
-            xs: 'auto',
-          },
-          left: {
-            md: '50%',
-            xs: 'auto',
-          },
-          transform: {
-            md: 'translate(-50%, -50%)',
-            xs: 'none',
-          },
-
-          [theme.breakpoints.down('md')]: {
-            borderRadius: 0,
-            height: '100vh',
-          },
-        })}
-      >
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <PaymentsIcon sx={{ mr: 1 }} />
-          <Typography variant="h6">New Entry</Typography>
-        </Box>
-        <Divider />
+    <Modal
+      open={isOpen}
+      onClose={onClose}
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <Zoom in={isOpen}>
         <Box
-          component="form"
-          onSubmit={onSubmitHandler}
-          sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}
+          component={Paper}
+          sx={(theme) => ({
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 1,
+
+            width: {
+              md: '50%',
+              xs: '100%',
+            },
+
+            height: 'auto',
+
+            [theme.breakpoints.down('md')]: {
+              borderRadius: 0,
+              height: '100vh',
+            },
+          })}
         >
-          <TextField
-            required
-            onChange={onChangeHandler}
-            name="date"
-            label="Date (MM/DD/YYYY)"
-            type="date"
-            defaultValue={entryForm.date}
-            slotProps={{
-              inputLabel: { shrink: true },
-              input: { autoComplete: 'off' },
-            }}
-          />
-          <TextField
-            required
-            onChange={onChangeHandler}
-            name="name"
-            label="Name"
-            type="text"
-            autoComplete="off"
-          />
-          <TextField
-            onChange={onChangeHandler}
-            name="description"
-            label="Description"
-            type="text"
-            autoComplete="off"
-          />
-          <TextField
-            required
-            onChange={onChangeHandler}
-            name="price"
-            label="Price"
-            type="number"
-            slotProps={{
-              htmlInput: {
-                step: 'any',
-              },
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    {currency === 'BRL' ? 'R$' : '$'}
-                  </InputAdornment>
-                ),
-              },
-            }}
-          />
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
-            <Button onClick={onClose} variant="outlined">
-              Cancel
-            </Button>
-            <Button type="submit" variant="contained">
-              Done
-            </Button>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <PaymentsIcon sx={{ mr: 1 }} />
+            <Typography variant="h6">New Entry</Typography>
+          </Box>
+          <Divider />
+          <Box
+            component="form"
+            onSubmit={onSubmitHandler}
+            sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}
+          >
+            <TextField
+              required
+              onChange={onChangeHandler}
+              name="date"
+              label="Date (MM/DD/YYYY)"
+              type="date"
+              defaultValue={entryForm.date}
+              slotProps={{
+                inputLabel: { shrink: true },
+                input: { autoComplete: 'off' },
+              }}
+            />
+            <TextField
+              required
+              onChange={onChangeHandler}
+              name="name"
+              label="Name"
+              type="text"
+              autoComplete="off"
+            />
+            <TextField
+              onChange={onChangeHandler}
+              name="description"
+              label="Description"
+              type="text"
+              autoComplete="off"
+            />
+            <TextField
+              required
+              onChange={onChangeHandler}
+              name="price"
+              label="Price"
+              type="number"
+              slotProps={{
+                htmlInput: {
+                  step: 'any',
+                },
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      {currency === 'BRL' ? 'R$' : '$'}
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
+              <Button onClick={onClose} variant="outlined">
+                Cancel
+              </Button>
+              <Button type="submit" variant="contained">
+                Done
+              </Button>
+            </Box>
           </Box>
         </Box>
-      </Box>
+      </Zoom>
     </Modal>
   );
 }
