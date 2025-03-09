@@ -1,35 +1,69 @@
-import { Box, InputAdornment, TextField, Typography } from '@mui/material';
+'use client';
 
-interface InputProps extends React.ComponentProps<typeof TextField> {
+import {
+  FormControl,
+  FormHelperText,
+  IconButton,
+  OutlinedInput,
+  Typography,
+} from '@mui/material';
+
+import { ElementType, useState } from 'react';
+
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+
+interface InputProps extends React.ComponentProps<typeof OutlinedInput> {
   title: string;
-  icon: React.ReactNode;
+  icon: ElementType;
+  type: string;
+  helperText?: string;
 }
 
-const inputStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  width: '100%',
-  gap: 1,
-};
+export default function Input({
+  title,
+  icon: Icon,
+  type,
+  helperText,
+  ...rest
+}: InputProps) {
+  const [visibility, setVisibility] = useState(false);
+  const toggleVisibility = () => setVisibility((prev) => !prev);
 
-export default function Input({ title, icon, ...rest }: InputProps) {
   return (
-    <Box sx={{ ...inputStyle }}>
+    <FormControl sx={{ gap: 1 }}>
       <Typography>{title}</Typography>
-      <TextField
-        required
+      <OutlinedInput
+        type={type === 'password' && visibility ? 'text' : type}
+        startAdornment={<Icon sx={{ mr: 1, color: 'text.secondary' }} />}
+        endAdornment={
+          type === 'password' && (
+            <IconButton onClick={toggleVisibility} sx={{ ml: 1 }}>
+              {visibility ? (
+                <VisibilityIcon sx={{ color: 'text.secondary' }} />
+              ) : (
+                <VisibilityOffIcon sx={{ color: 'text.secondary' }} />
+              )}
+            </IconButton>
+          )
+        }
+        onKeyDown={
+          type === 'username'
+            ? (event) => {
+                // blocks space in username inputs
+                if (event.key === ' ') event.preventDefault();
+              }
+            : undefined
+        }
         {...rest}
-        slotProps={{
-          input: {
-            startAdornment: (
-              <InputAdornment position="start" sx={{ color: 'text.secondary' }}>
-                {icon}
-              </InputAdornment>
-            ),
-          },
-          ...rest.slotProps,
-        }}
       />
-    </Box>
+      {helperText && (
+        <FormHelperText
+          sx={{ color: rest.error ? 'error.main' : 'success.main' }}
+        >
+          {helperText}
+        </FormHelperText>
+      )}
+    </FormControl>
   );
 }
