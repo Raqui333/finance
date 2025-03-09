@@ -115,9 +115,9 @@ export default function LoginForm() {
         disabled={loading}
         name="username"
         title="Username"
-        type="text"
+        type="username"
         placeholder="Enter your username"
-        icon={<AlternateEmailIcon />}
+        icon={AlternateEmailIcon}
         onChange={onChangeHandler}
       />
       <Input
@@ -126,7 +126,7 @@ export default function LoginForm() {
         title="Password"
         type="password"
         placeholder="Enter your password"
-        icon={<LockOutlinedIcon />}
+        icon={LockOutlinedIcon}
         onChange={onChangeHandler}
       />
       {error.isError && (

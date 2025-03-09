@@ -144,7 +144,7 @@ export default function RegisterForm() {
         title="Name"
         type="text"
         placeholder="Enter your name"
-        icon={<PersonIcon />}
+        icon={PersonIcon}
         onChange={onChangeHandler}
       />
       <Input
@@ -153,23 +153,13 @@ export default function RegisterForm() {
         autoComplete="off"
         name="username"
         title="Username"
-        type="text"
+        type="username"
         placeholder="Enter your username"
-        icon={<AlternateEmailIcon />}
+        icon={AlternateEmailIcon}
         onChange={onChangeHandler}
-        color={color}
         helperText={helperText}
+        color={color}
         error={availability === false && true}
-        onKeyDown={(event) => {
-          if (event.key === ' ') event.preventDefault();
-        }}
-        slotProps={{
-          formHelperText: {
-            sx: {
-              color: availability ? 'success.main' : 'error.main',
-            },
-          },
-        }}
       />
       <Input
         required
@@ -179,7 +169,7 @@ export default function RegisterForm() {
         title="Password (at least 8 characters)"
         type="password"
         placeholder="Enter your password"
-        icon={<LockOutlinedIcon />}
+        icon={LockOutlinedIcon}
         onChange={onChangeHandler}
       />
       <Input
@@ -190,7 +180,7 @@ export default function RegisterForm() {
         title="Confirm your password"
         type="password"
         placeholder="Confirm your password"
-        icon={<LockOutlinedIcon />}
+        icon={LockOutlinedIcon}
         onChange={onChangeHandler}
       />
       {error.isError && (
