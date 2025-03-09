@@ -1,10 +1,10 @@
 import { Box, Container } from '@mui/material';
 
 import ChangeCurrency from '@/shared/components/ChangeCurrency';
-import Chart from './components/ui/Chart';
-import PerformanceCard from './components/ui/PerformanceCard';
-import FinanceEntries from './components/ui/FinanceEntries';
-import Profile from './components/ui/Profile';
+import Chart from './components/Chart';
+import PerformanceCard from './components/PerformanceCard';
+import FinanceEntries from './components/FinanceEntries';
+import Profile from './components/Profile';
 
 export default function Dashboard() {
   return (

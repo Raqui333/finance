@@ -25,7 +25,7 @@ import { setEntry, setName } from '@/shared/store/features/user/userSlice';
 
 import { useEffect, useState } from 'react';
 
-import NewEntryModal from '../modals/NewEntryModal';
+import NewEntryModal from './modals/NewEntryModal';
 import { useRouter } from 'next/navigation';
 
 const flexColumn = {
