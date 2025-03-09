@@ -12,6 +12,8 @@ import { ElementType, useState } from 'react';
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ErrorIcon from '@mui/icons-material/Error';
 
 interface InputProps extends React.ComponentProps<typeof OutlinedInput> {
   title: string;
@@ -19,6 +21,8 @@ interface InputProps extends React.ComponentProps<typeof OutlinedInput> {
   type: string;
   helperText?: string;
 }
+
+const HELPER_TEXT_FONT_SIZE = 15;
 
 export default function Input({
   title,
@@ -59,8 +63,18 @@ export default function Input({
       />
       {helperText && (
         <FormHelperText
-          sx={{ color: rest.error ? 'error.main' : 'success.main' }}
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            color: rest.error ? 'error.main' : 'success.main',
+            gap: 0.5,
+          }}
         >
+          {rest.error ? (
+            <ErrorIcon sx={{ fontSize: HELPER_TEXT_FONT_SIZE }} />
+          ) : (
+            <CheckCircleIcon sx={{ fontSize: HELPER_TEXT_FONT_SIZE }} />
+          )}
           {helperText}
         </FormHelperText>
       )}
