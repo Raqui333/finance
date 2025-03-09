@@ -1,6 +1,6 @@
 'use client';
 
-import { ThemeProvider, createTheme, CssBaseline, alpha } from '@mui/material';
+import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 
 export const theme = createTheme({
   palette: {
