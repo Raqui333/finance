@@ -39,23 +39,25 @@ export default function Login() {
   const loading = useAppSelector((state) => state.login.loading);
 
   return (
-    <Container sx={{ ...mainContainerStyle }}>
+    <Box>
       <Alert severity="info">This is a Demo</Alert>
-      <Box component={Paper} sx={{ ...loginBoxStyle }}>
-        <Box sx={{ ...flexColumn }}>
-          <Typography sx={{ ...titleStyle }}>Finance Dashboard</Typography>
-          <Typography>Welcome back! Please login to continue</Typography>
+      <Container sx={{ ...mainContainerStyle }}>
+        <Box component={Paper} sx={{ ...loginBoxStyle }}>
+          <Box sx={{ ...flexColumn }}>
+            <Typography sx={{ ...titleStyle }}>Finance Dashboard</Typography>
+            <Typography>Welcome back! Please login to continue</Typography>
+          </Box>
+          <LoginForm />
+          <Alert severity="info">Try "admin" for login and password</Alert>
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            <Typography>Don't have an account?</Typography>
+            <Link href="/auth/register" underline="hover" color="primary.main">
+              Register here
+            </Link>
+          </Box>
+          <Box sx={{ width: '100%' }}>{loading && <LinearProgress />}</Box>
         </Box>
-        <LoginForm />
-        <Alert severity="info">Try "admin" for login and password</Alert>
-        <Box sx={{ display: 'flex', gap: 1 }}>
-          <Typography>Don't have an account?</Typography>
-          <Link href="/auth/register" underline="hover" color="primary.main">
-            Register here
-          </Link>
-        </Box>
-        <Box sx={{ width: '100%' }}>{loading && <LinearProgress />}</Box>
-      </Box>
-    </Container>
+      </Container>
+    </Box>
   );
 }
