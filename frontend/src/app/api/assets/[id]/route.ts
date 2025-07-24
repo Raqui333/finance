@@ -1,8 +1,7 @@
-export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
-  const { id } = params;
+import { NextRequest } from 'next/server';
+
+export async function DELETE(request: NextRequest, context: any) {
+  const id = context.params?.id;
 
   return new Response(JSON.stringify({ id: Number(id) }), {
     status: 200,
