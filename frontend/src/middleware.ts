@@ -8,9 +8,9 @@ const public_routes = ['/auth/login', '/auth/register'];
 async function validadeToken(token: string | undefined) {
   if (!token) return false;
 
-  const resp = await fetch(`${API}/auth/validate-token`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+  const resp = await fetch(`${API}/auth/validate-token`);
+
+  console.log(resp.status);
 
   if (resp.status === 401) return false;
 

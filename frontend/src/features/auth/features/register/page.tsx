@@ -7,6 +7,7 @@ import {
   Typography,
   Link,
   LinearProgress,
+  Alert,
 } from '@mui/material';
 
 import RegisterForm from './components/RegisterForm';
@@ -23,7 +24,10 @@ const mainContainerStyle = {
   ...flexColumn,
   justifyContent: 'center',
   padding: 2,
+  marginBottom: 10,
+  marginTop: 10,
   height: '100vh',
+  gap: 2,
 };
 
 const loginBoxStyle = {
@@ -45,6 +49,7 @@ export default function Register() {
 
   return (
     <Container sx={{ ...mainContainerStyle }}>
+      <Alert severity="info">This is a Demo</Alert>
       <Box component={Paper} sx={{ ...loginBoxStyle }}>
         <Box sx={{ ...flexColumn }}>
           <Typography sx={{ ...titleSectionStyle }}>

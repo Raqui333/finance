@@ -2,7 +2,7 @@
 
 import { cookies } from 'next/headers';
 
-const API = process.env.API_URL || 'http://localhost:3000';
+const API = process.env.API_URL || 'http://localhost:3000/api';
 
 const public_routes = [
   '/auth/login',
@@ -91,7 +91,8 @@ export async function register(form: RegisterFormForPost) {
 }
 
 export async function validateUsername(username: string) {
-  return await fetchAPI(`/users/validate-username/${username}`);
+  if (username.toLocaleLowerCase() == 'admin')
+    throw new Error('username in use');
 }
 
 export async function logout() {
