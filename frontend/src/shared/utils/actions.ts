@@ -22,7 +22,7 @@ async function fetchAPI(endpoint: string, options: RequestInit = {}) {
     if (!routesPattern.test(endpoint) && !token)
       throw new Error('No Token Request');
 
-    const response = await fetch(`${API}${endpoint}`, {
+    const response = await fetch(`${API}/api/${endpoint}`, {
       cache: 'no-store',
       ...options,
       headers: { ...options.headers, Authorization: `Bearer ${token}` },
