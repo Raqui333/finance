@@ -2,7 +2,7 @@
 
 import { cookies } from 'next/headers';
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+const API = process.env.API_URL;
 
 const public_routes = [
   '/auth/login',
