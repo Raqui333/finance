@@ -10,8 +10,6 @@ async function validadeToken(token: string | undefined) {
 
   const resp = await fetch(`${API}/auth/validate-token`);
 
-  console.log(resp.status);
-
   if (resp.status === 401) return false;
 
   return true;
