@@ -1,7 +1,9 @@
-export async function POST(request: Request) {
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function POST(request: NextRequest) {
   const body = await request.json();
 
-  return new Response(
+  return new NextResponse(
     JSON.stringify({ asset: { id: 1, ...body, holder_id: 1 } }),
     {
       status: 200,
@@ -25,7 +27,7 @@ export async function GET() {
     },
   ];
 
-  return new Response(JSON.stringify(entry), {
+  return new NextResponse(JSON.stringify(entry), {
     status: 200,
     headers: { 'Content-Type': 'application/json' },
   });

@@ -1,14 +1,16 @@
-export async function POST(request: Request) {
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function POST(request: NextRequest) {
   const body = await request.json();
   const { username, password } = body;
 
   if (username !== 'admin' && password !== 'admin')
-    return new Response(JSON.stringify({ access_token: 'DEMO_TOKEN' }), {
+    return new NextResponse(JSON.stringify({ access_token: 'DEMO_TOKEN' }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
 
-  return new Response(
+  return new NextResponse(
     JSON.stringify({ message: 'Unauthorized', statusCode: 401 }),
     {
       status: 401,

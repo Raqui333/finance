@@ -1,5 +1,7 @@
+import { NextResponse } from 'next/server';
+
 export async function GET() {
-  return new Response('DEMO', {
+  return new NextResponse('DEMO', {
     status: 200,
     headers: { 'Content-Type': 'application/json' },
   });
