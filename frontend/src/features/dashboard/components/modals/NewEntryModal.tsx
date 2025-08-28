@@ -55,6 +55,7 @@ export default function NewEntryModal({
 
     createUserEntry(entryForm as UserEntry)
       .then((res) => {
+        console.log(res);
         dispatch(addEntry(res.asset));
         onClose();
       })

@@ -79,6 +79,8 @@ export default function LoginForm() {
         .catch((err) => {
           dispatch(setLoading(false));
 
+          console.log(err);
+
           const error_body = JSON.parse(err.message);
 
           const validations = [

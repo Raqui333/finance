@@ -1,4 +1,4 @@
-import { Box, Container } from '@mui/material';
+import { Alert, Box, Container } from '@mui/material';
 
 import ChangeCurrency from '@/shared/components/ChangeCurrency';
 import Chart from './components/Chart';
@@ -8,39 +8,42 @@ import Profile from './components/Profile';
 
 export default function Dashboard() {
   return (
-    <Container
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        padding: 2,
-      }}
-    >
-      <ChangeCurrency />
-      <Box
+    <Box>
+      <Alert severity="info">This is a Demo</Alert>
+      <Container
         sx={{
           display: 'flex',
-          width: '100%',
+          flexDirection: 'column',
           alignItems: 'center',
-          marginBottom: 2,
-          flexDirection: { md: 'row', xs: 'column' },
+          padding: 2,
         }}
       >
-        <Chart />
+        <ChangeCurrency />
         <Box
           sx={{
             display: 'flex',
             width: '100%',
-            flexDirection: 'column',
-            flexBasis: { md: 'none', xs: '10%' },
-            gap: 1,
+            alignItems: 'center',
+            marginBottom: 2,
+            flexDirection: { md: 'row', xs: 'column' },
           }}
         >
-          <Profile />
-          <PerformanceCard name="Performance" />
+          <Chart />
+          <Box
+            sx={{
+              display: 'flex',
+              width: '100%',
+              flexDirection: 'column',
+              flexBasis: { md: 'none', xs: '10%' },
+              gap: 1,
+            }}
+          >
+            <Profile />
+            <PerformanceCard name="Performance" />
+          </Box>
         </Box>
-      </Box>
-      <FinanceEntries />
-    </Container>
+        <FinanceEntries />
+      </Container>
+    </Box>
   );
 }

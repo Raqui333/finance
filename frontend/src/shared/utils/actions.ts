@@ -2,7 +2,7 @@
 
 import { cookies } from 'next/headers';
 
-const API = process.env.API_URL || 'http://localhost:3000';
+const API = process.env.API_URL;
 
 const public_routes = [
   '/auth/login',
@@ -22,7 +22,7 @@ async function fetchAPI(endpoint: string, options: RequestInit = {}) {
     if (!routesPattern.test(endpoint) && !token)
       throw new Error('No Token Request');
 
-    const response = await fetch(`${API}${endpoint}`, {
+    const response = await fetch(`${API}/api/${endpoint}`, {
       cache: 'no-store',
       ...options,
       headers: { ...options.headers, Authorization: `Bearer ${token}` },
@@ -91,7 +91,8 @@ export async function register(form: RegisterFormForPost) {
 }
 
 export async function validateUsername(username: string) {
-  return await fetchAPI(`/users/validate-username/${username}`);
+  if (username.toLocaleLowerCase() == 'admin')
+    throw new Error('username in use');
 }
 
 export async function logout() {

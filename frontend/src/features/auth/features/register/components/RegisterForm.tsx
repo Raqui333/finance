@@ -103,15 +103,8 @@ export default function RegisterForm() {
         return;
       }
 
-      register(form)
-        .then(() => {
-          dispatch(setLoading(true));
-          router.push('/auth/login');
-        })
-        .catch((err) => {
-          dispatch(setLoading(false));
-          console.error(err);
-        });
+      dispatch(setLoading(true));
+      router.push('/auth/login');
     },
     [form, availability]
   );

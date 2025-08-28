@@ -7,6 +7,7 @@ import {
   Typography,
   Link,
   LinearProgress,
+  Alert,
 } from '@mui/material';
 
 import RegisterForm from './components/RegisterForm';
@@ -23,6 +24,8 @@ const mainContainerStyle = {
   ...flexColumn,
   justifyContent: 'center',
   padding: 2,
+  marginBottom: 4,
+  marginTop: 4,
   height: '100vh',
 };
 
@@ -44,23 +47,26 @@ export default function Register() {
   const loading = useAppSelector((state) => state.register.loading);
 
   return (
-    <Container sx={{ ...mainContainerStyle }}>
-      <Box component={Paper} sx={{ ...loginBoxStyle }}>
-        <Box sx={{ ...flexColumn }}>
-          <Typography sx={{ ...titleSectionStyle }}>
-            Finance Dashboard
-          </Typography>
-          <Typography>Sign up in seconds and get started now!</Typography>
+    <Box>
+      <Alert severity="info">This is a Demo</Alert>
+      <Container sx={{ ...mainContainerStyle }}>
+        <Box component={Paper} sx={{ ...loginBoxStyle }}>
+          <Box sx={{ ...flexColumn }}>
+            <Typography sx={{ ...titleSectionStyle }}>
+              Finance Dashboard
+            </Typography>
+            <Typography>Sign up in seconds and get started now!</Typography>
+          </Box>
+          <RegisterForm />
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            <Typography>Already have an account?</Typography>
+            <Link href="/auth/login" underline="hover" color="primary.main">
+              Login here
+            </Link>
+          </Box>
+          <Box sx={{ width: '100%' }}>{loading && <LinearProgress />}</Box>
         </Box>
-        <RegisterForm />
-        <Box sx={{ display: 'flex', gap: 1 }}>
-          <Typography>Already have an account?</Typography>
-          <Link href="/auth/login" underline="hover" color="primary.main">
-            Login here
-          </Link>
-        </Box>
-        <Box sx={{ width: '100%' }}>{loading && <LinearProgress />}</Box>
-      </Box>
-    </Container>
+      </Container>
+    </Box>
   );
 }

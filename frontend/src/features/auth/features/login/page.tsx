@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Paper, Container, Typography, Link } from '@mui/material';
+import { Box, Paper, Container, Typography, Link, Alert } from '@mui/material';
 
 import { useAppSelector } from '@/shared/store/hooks';
 
@@ -18,6 +18,7 @@ const mainContainerStyle = {
   justifyContent: 'center',
   padding: 2,
   height: '100vh',
+  gap: 2,
 };
 
 const loginBoxStyle = {
@@ -38,21 +39,25 @@ export default function Login() {
   const loading = useAppSelector((state) => state.login.loading);
 
   return (
-    <Container sx={{ ...mainContainerStyle }}>
-      <Box component={Paper} sx={{ ...loginBoxStyle }}>
-        <Box sx={{ ...flexColumn }}>
-          <Typography sx={{ ...titleStyle }}>Finance Dashboard</Typography>
-          <Typography>Welcome back! Please login to continue</Typography>
+    <Box>
+      <Alert severity="info">This is a Demo</Alert>
+      <Container sx={{ ...mainContainerStyle }}>
+        <Box component={Paper} sx={{ ...loginBoxStyle }}>
+          <Box sx={{ ...flexColumn }}>
+            <Typography sx={{ ...titleStyle }}>Finance Dashboard</Typography>
+            <Typography>Welcome back! Please login to continue</Typography>
+          </Box>
+          <LoginForm />
+          <Alert severity="info">Try "admin" for login and password</Alert>
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            <Typography>Don't have an account?</Typography>
+            <Link href="/auth/register" underline="hover" color="primary.main">
+              Register here
+            </Link>
+          </Box>
+          <Box sx={{ width: '100%' }}>{loading && <LinearProgress />}</Box>
         </Box>
-        <LoginForm />
-        <Box sx={{ display: 'flex', gap: 1 }}>
-          <Typography>Don't have an account?</Typography>
-          <Link href="/auth/register" underline="hover" color="primary.main">
-            Register here
-          </Link>
-        </Box>
-        <Box sx={{ width: '100%' }}>{loading && <LinearProgress />}</Box>
-      </Box>
-    </Container>
+      </Container>
+    </Box>
   );
 }
